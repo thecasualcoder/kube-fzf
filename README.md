@@ -14,11 +14,14 @@ Shell functions using [`kubectl`](https://kubernetes.io/docs/reference/kubectl/o
 
 ```
 git clone https://github.com/arunvelsriram/kube-fzf.git --depth=1 ~/.kube-fzf
-
+```
+```
 # zsh users
 echo "[ -f ~/.kube-fzf/kube-fzf.sh ] && source ~/.kube-fzf/kube-fzf.sh" >> ~/.zshrc
 source ~/.zshrc
+```
 
+```
 # bash users
 echo "[ -f ~/.kube-fzf/kube-fzf.sh ] && source ~/.kube-fzf/kube-fzf.sh" >> ~/.bashrc
 source ~/.bashrc
