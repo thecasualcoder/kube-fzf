@@ -12,8 +12,13 @@ _kube_fzf_handler() {
         shift
         shift
         ;;
-      -q)
+      -p)
         pod_search_query="$2"
+        shift
+        shift
+        ;;
+      -c)
+        container_search_query="$2"
         shift
         shift
         ;;
@@ -25,7 +30,7 @@ _kube_fzf_handler() {
     esac
   done
 
-  args="$namespace|$pod_search_query"
+  args="$namespace|$pod_search_query|$container_search_query"
   return 0
 }
 
@@ -49,12 +54,24 @@ _kube_fzf_findpod() {
 }
 
 findpod() {
-  local namespace pod_search_query
+  local namespace pod_search_query _container_search_query
   _kube_fzf_handler "$@" || return 1
-  IFS=$'|' read -r namespace pod_search_query <<< "$args"
+  IFS=$'|' read -r namespace pod_search_query _container_search_query <<< "$args"
   _kube_fzf_findpod "$namespace" "$pod_search_query"
   _kube_fzf_cleanup
   return 0
+}
+
+tailpod() {
+  local namespace pod_search_query container_search_query
+  _kube_fzf_handler "$@" || return 1
+  IFS=$'|' read -r namespace pod_search_query container_search_query <<< "$args"
+  local pod_name=$(_kube_fzf_findpod "$namespace" "$pod_search_query")
+  [ -n "$container_search_query" ] && local fzf_arg="--query=$container_search_query"
+  local container_name=$(kubectl get pod $pod_name --output jsonpath='{.spec.containers[*].name}' | fzf $fzf_arg)
+  local namespace_arg="--namespace=$namespace"
+  kubectl logs $namespace_arg --follow $pod_name $container_name
+  _kube_fzf_cleanup
 }
 
 _kube_fzf_cleanup() {
