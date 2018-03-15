@@ -45,11 +45,12 @@ _kube_fzf_findpod() {
     pod_name_field=1
   fi
 
-  [ -n "$pod_search_query" ] && local fzf_args="--query=$pod_search_query"
+  local fzf_args="--select-1"
+  [ -n "$pod_search_query" ] && fzf_args="$fzf_args --query=$pod_search_query"
 
   local pod_name=$(kubectl get pod $namespace_arg --no-headers \
     | awk -v field="$pod_name_field" '{ print $field }' \
-    | fzf $fzf_args)
+    | fzf $(printf %s $fzf_args))
   echo $pod_name
 }
 
@@ -67,10 +68,11 @@ tailpod() {
   _kube_fzf_handler "$@" || return 1
   IFS=$'|' read -r namespace pod_search_query container_search_query <<< "$args"
   local pod_name=$(_kube_fzf_findpod "$namespace" "$pod_search_query")
-  [ -n "$container_search_query" ] && local fzf_arg="--query=$container_search_query"
-  local container_name=$(kubectl get pod $pod_name --output jsonpath='{.spec.containers[*].name}' | fzf $fzf_arg)
-  local namespace_arg="--namespace=$namespace"
-  kubectl logs $namespace_arg --follow $pod_name $container_name
+  local fzf_args="--select-1"
+  [ -n "$container_search_query" ] && fzf_args="$fzf_args --query=$container_search_query"
+  local container_name=$(kubectl get pod $pod_name --output jsonpath='{.spec.containers[*].name}' \
+    | fzf $(printf %s $fzf_args))
+  kubectl logs --namespace=$namespace --follow $pod_name $container_name
   _kube_fzf_cleanup
 }
 
