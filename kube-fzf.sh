@@ -29,10 +29,9 @@ _kube_fzf_handler() {
   return 0
 }
 
-findpod() {
-  local namespace pod_search_query
-  _kube_fzf_handler "$@" || return 1
-  IFS=$'|' read -r namespace pod_search_query <<< "$args"
+_kube_fzf_findpod() {
+  local namespace=$1
+  local pod_search_query=$2
 
   local namespace_arg="--all-namespaces"
   local pod_name_field=2
@@ -47,7 +46,13 @@ findpod() {
     | awk -v field="$pod_name_field" '{ print $field }' \
     | fzf $fzf_args)
   echo $pod_name
+}
 
+findpod() {
+  local namespace pod_search_query
+  _kube_fzf_handler "$@" || return 1
+  IFS=$'|' read -r namespace pod_search_query <<< "$args"
+  _kube_fzf_findpod "$namespace" "$pod_search_query"
   _kube_fzf_cleanup
   return 0
 }
