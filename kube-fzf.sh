@@ -1,5 +1,17 @@
 #! /bin/bash
 
+_kube_fzf_usage() {
+  cat <<EOF
+Unknown argument: $1
+
+USAGE:
+
+<function_name> [-n <namespace>] [-p <pod-search-query>] [-c <container-search-query>]
+
+<getpod|findpod|tailpod> [-n <namespace>] [-p <pod-search-query>] [-c <container-search-query>]
+EOF
+}
+
 _kube_fzf_handler() {
   local namespace pod_search_query
 
@@ -23,9 +35,7 @@ _kube_fzf_handler() {
         shift
         ;;
       *)
-        echo "Unknown argument: $1"
-        echo "USAGE:"
-        echo "WIP"
+        _kube_fzf_usage "$1"
         return 1
     esac
   done
