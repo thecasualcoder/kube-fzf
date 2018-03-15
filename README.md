@@ -37,5 +37,4 @@ source ~/.bashrc
 <getpod|findpod|tailpod> [-n <namespace>] [-p <pod-search-query>] [-c <container-search-query>]
 ```
 
-![kube-fzf Demo]
-(demo.gif)
+![kube-fzf Demo](/demo.gif)
