@@ -73,6 +73,16 @@ findpod() {
   return 0
 }
 
+getpod() {
+  local namespace pod_search_query _container_search_query
+  _kube_fzf_handler "$@" || return 1
+  IFS=$'|' read -r namespace pod_search_query _container_search_query <<< "$args"
+  local pod_name=$(_kube_fzf_findpod "$namespace" "$pod_search_query")
+  _kube_fzf_echo "kubectl get pod --namespace='$namespace' --output wide $pod_name"
+  kubectl get pod --namespace=$namespace --output wide $pod_name
+  _kube_fzf_cleanup
+}
+
 tailpod() {
   local namespace pod_search_query container_search_query
   _kube_fzf_handler "$@" || return 1
