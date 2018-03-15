@@ -57,6 +57,13 @@ _kube_fzf_findpod() {
   echo $pod_name
 }
 
+_kube_fzf_echo() {
+  local reset_color="\033[0m"
+  local bold_green="\033[1;32m"
+  local message=$1
+  echo -e "\n$bold_green $message $reset_color\n"
+}
+
 findpod() {
   local namespace pod_search_query _container_search_query
   _kube_fzf_handler "$@" || return 1
@@ -74,6 +81,7 @@ tailpod() {
   local fzf_args=$(_kube_fzf_fzf_args "$container_search_query")
   local container_name=$(kubectl get pod $pod_name --output jsonpath='{.spec.containers[*].name}' \
     | fzf $(printf %s $fzf_args))
+  _kube_fzf_echo "kubectl logs --namespace=$namespace --follow $pod_name $container_name"
   kubectl logs --namespace=$namespace --follow $pod_name $container_name
   _kube_fzf_cleanup
 }
