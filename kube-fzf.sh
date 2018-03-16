@@ -106,6 +106,16 @@ tailpod() {
   _kube_fzf_cleanup
 }
 
+describepod() {
+  local namespace pod_search_query _container_search_query
+  _kube_fzf_handler "$@" || return 1
+  IFS=$'|' read -r namespace pod_search_query _container_search_query <<< "$args"
+  local pod_name=$(_kube_fzf_findpod "$namespace" "$pod_search_query")
+  _kube_fzf_echo "kubectl describe pod $pod_name --namespace='$namespace'"
+  kubectl describe pod $pod_name --namespace=$namespace
+  _kube_fzf_cleanup
+}
+
 _kube_fzf_cleanup() {
   unset args
 }
