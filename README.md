@@ -13,7 +13,7 @@ Shell functions using [`kubectl`](https://kubernetes.io/docs/reference/kubectl/o
 ## Install
 
 ```
-git clone https://github.com/arunvelsriram/kube-fzf.git --depth=1 ~/.kube-fzf
+git clone https://github.com/arunvelsriram/kube-fzf.git ~/.kube-fzf
 ```
 ```
 # zsh users
