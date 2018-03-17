@@ -4,9 +4,9 @@ _kube_fzf_usage() {
   cat <<EOF
 USAGE:
 
-<function_name> [-n <namespace>] [pod-search-query]
+<function_name> [-n <namespace-query>] [pod-query]
 
-<findpod|tailpod> [-n <namespace>] [pod-search-query]
+<findpod|tailpod> [-n <namespace-query>] [pod-query]
 EOF
 }
 
@@ -19,7 +19,7 @@ _kube_fzf_handler() {
         return 1
         ;;
       n)
-        local namespace="$OPTARG"
+        local namespace_query="$OPTARG"
         ;;
       \?)
         echo "Invalid Option: -$OPTARG\n"
@@ -34,9 +34,9 @@ _kube_fzf_handler() {
     esac
   done
   shift $((OPTIND - 1))
-  [ -n "$1" ] && local pod_search_query=$1
+  [ -n "$1" ] && local pod_query=$1
 
-  args="$namespace|$pod_search_query"
+  args="$namespace_query|$pod_query"
 }
 
 _kube_fzf_fzf_args() {
@@ -49,8 +49,8 @@ _kube_fzf_fzf_args() {
 _kube_fzf_search_pod() {
   local pod_name
   local namespace=$1
-  local pod_search_query=$2
-  local pod_fzf_args=$(_kube_fzf_fzf_args "$pod_search_query")
+  local pod_query=$2
+  local pod_fzf_args=$(_kube_fzf_fzf_args "$pod_query")
 
   if [ -z "$namespace" ]; then
     read namespace pod_name <<< \
@@ -86,11 +86,11 @@ _kube_fzf_teardown() {
 }
 
 findpod() {
-  local namespace_search_query pod_search_query result namespace pod_name
+  local namespace_query pod_query result namespace pod_name
   _kube_fzf_handler "$@" || return $(_kube_fzf_teardown 1)
-  IFS=$'|' read -r namespace_search_query pod_search_query <<< "$args"
+  IFS=$'|' read -r namespace_query pod_query <<< "$args"
 
-  result=$(_kube_fzf_search_pod "$namespace_search_query" "$pod_search_query")
+  result=$(_kube_fzf_search_pod "$namespace_query" "$pod_query")
   [ $? -ne 0 ] && echo "$result" && return $(_kube_fzf_teardown 1)
   IFS=$'|' read -r namespace pod_name <<< "$result"
 
@@ -100,11 +100,11 @@ findpod() {
 }
 
 tailpod() {
-  local namespace_search_query pod_search_query result namespace pod_name
+  local namespace_query pod_query result namespace pod_name
   _kube_fzf_handler "$@" || return $(_kube_fzf_teardown 1)
-  IFS=$'|' read -r namespace_search_query pod_search_query <<< "$args"
+  IFS=$'|' read -r namespace_query pod_query <<< "$args"
 
-  result=$(_kube_fzf_search_pod "$namespace_search_query" "$pod_search_query")
+  result=$(_kube_fzf_search_pod "$namespace_query" "$pod_query")
   [ $? -ne 0 ] && echo "$result" && return $(_kube_fzf_teardown 1)
   IFS=$'|' read -r namespace pod_name <<< "$result"
 

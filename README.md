@@ -30,11 +30,13 @@ source ~/.bashrc
 ## Usage
 
 ```
-<function_name> [-n <namespace>] [pod-search-query]
+<function_name> [-n <namespace-query>] [pod-query]
 ```
 
 ```
-<findpod|tailpod> [-n <namespace>] [pod-search-query]
+<findpod|tailpod> [-n <namespace-query>] [pod-query]
 ```
+
+**Note:** If there is only one match for `<namespace-query>` then it is selected automatically.
 
 ![kube-fzf Demo](/demo.gif)
