@@ -34,7 +34,6 @@ _kube_fzf_handler() {
   [ -n "$1" ] && local pod_search_query=$1
 
   args="$namespace|$pod_search_query"
-  return 0
 }
 
 _kube_fzf_fzf_args() {
@@ -67,28 +66,32 @@ _kube_fzf_echo() {
   echo -e "\n$bold_green $message $reset_color\n"
 }
 
+_kube_fzf_teardown() {
+  unset args
+  echo $1
+}
+
 findpod() {
   local namespace pod_search_query
-  _kube_fzf_handler "$@" || return 1
+  _kube_fzf_handler "$@" || return $(_kube_fzf_teardown 1)
   IFS=$'|' read -r namespace pod_search_query <<< "$args"
   _kube_fzf_findpod "$namespace" "$pod_search_query"
-  _kube_fzf_cleanup
-  return 0
+  return $(_kube_fzf_teardown 0)
 }
 
 getpod() {
   local namespace pod_search_query
-  _kube_fzf_handler "$@" || return 1
+  _kube_fzf_handler "$@" || return $(_kube_fzf_teardown 1)
   IFS=$'|' read -r namespace pod_search_query <<< "$args"
   local pod_name=$(_kube_fzf_findpod "$namespace" "$pod_search_query")
   _kube_fzf_echo "kubectl get pod --namespace='$namespace' --output=wide $pod_name"
   kubectl get pod --namespace=$namespace --output=wide $pod_name
-  _kube_fzf_cleanup
+  return $(_kube_fzf_teardown 0)
 }
 
 tailpod() {
   local namespace pod_search_query
-  _kube_fzf_handler "$@" || return 1
+  _kube_fzf_handler "$@" || return $(_kube_fzf_teardown 1)
   IFS=$'|' read -r namespace pod_search_query <<< "$args"
   local pod_name=$(_kube_fzf_findpod "$namespace" "$pod_search_query")
   local fzf_args=$(_kube_fzf_fzf_args)
@@ -96,9 +99,6 @@ tailpod() {
     | fzf $(printf %s $fzf_args) --select-1)
   _kube_fzf_echo "kubectl logs --namespace='$namespace' --follow $pod_name $container_name"
   kubectl logs --namespace=$namespace --follow $pod_name $container_name
-  _kube_fzf_cleanup
+  return $(_kube_fzf_teardown 0)
 }
 
-_kube_fzf_cleanup() {
-  unset args
-}
