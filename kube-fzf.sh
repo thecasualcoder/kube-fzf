@@ -92,7 +92,7 @@ tailpod() {
   IFS=$'|' read -r namespace pod_search_query <<< "$args"
   local pod_name=$(_kube_fzf_findpod "$namespace" "$pod_search_query")
   local fzf_args=$(_kube_fzf_fzf_args)
-  local container_name=$(kubectl get pod $pod_name --output=jsonpath='{.spec.containers[*].name}' \
+  local container_name=$(kubectl get pod $pod_name --namespace=$namespace --output=jsonpath='{.spec.containers[*].name}' \
     | fzf $(printf %s $fzf_args) --select-1)
   _kube_fzf_echo "kubectl logs --namespace='$namespace' --follow $pod_name $container_name"
   kubectl logs --namespace=$namespace --follow $pod_name $container_name
