@@ -29,12 +29,28 @@ source ~/.bashrc
 
 ## Usage
 
-```
-<function_name> [-n <namespace-query>] [pod-query]
-```
+### `findpod`
 
 ```
-<findpod|tailpod> [-n <namespace-query>] [pod-query]
+findpod [-n <namespace-query>] [pod-query]
+
+findpod -h for help
+```
+
+### `tailpod`
+
+```
+tailpod [-n <namespace-query>] [pod-query]
+
+tailpod -h for help
+```
+
+### `execpod`
+
+```
+execpod [-n <namespace-query>] [pod-query] <command>
+
+execpod -h for help
 ```
 
 **Note:** If there is only one match for `<namespace-query>` then it is selected automatically.
