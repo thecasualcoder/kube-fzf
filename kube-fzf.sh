@@ -14,6 +14,7 @@ _kube_fzf_usage() {
       echo "execpod [-n <namespace-query>] [pod-query] <command>"
       ;;
   esac
+  echo "\n$func -h for help"
 }
 
 _kube_fzf_handler() {
