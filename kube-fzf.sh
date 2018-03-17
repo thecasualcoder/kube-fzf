@@ -63,7 +63,6 @@ _kube_fzf_handler() {
   fi
 
   args="$namespace_query|$pod_query|$cmd"
-  echo $args
 }
 
 _kube_fzf_fzf_args() {
