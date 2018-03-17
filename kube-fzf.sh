@@ -62,8 +62,8 @@ _kube_fzf_handler() {
     pod_query=$1
   fi
 
-  namespace_query=${namespace_query:=default}
   args="$namespace_query|$pod_query|$cmd"
+  echo $args
 }
 
 _kube_fzf_fzf_args() {
@@ -118,8 +118,8 @@ findpod() {
   local namespace_query pod_query result namespace pod_name
 
   _kube_fzf_handler "$0" "$@" || return $(_kube_fzf_teardown 1)
-  read namespace_query pod_query <<< \
-      $(echo $args | awk -F '|' '{ print $1, $2 }')
+  namespace_query=$(echo $args | awk -F '|' '{ print $1 }')
+  pod_query=$(echo $args | awk -F '|' '{ print $2 }')
 
   result=$(_kube_fzf_search_pod "$namespace_query" "$pod_query")
   [ $? -ne 0 ] && echo "$result" && return $(_kube_fzf_teardown 1)
@@ -134,8 +134,8 @@ tailpod() {
   local namespace_query pod_query result namespace pod_name
 
   _kube_fzf_handler "$0" "$@" || return $(_kube_fzf_teardown 1)
-  read namespace_query pod_query <<< \
-      $(echo $args | awk -F '|' '{ print $1, $2 }')
+  namespace_query=$(echo $args | awk -F '|' '{ print $1 }')
+  pod_query=$(echo $args | awk -F '|' '{ print $2 }')
 
   result=$(_kube_fzf_search_pod "$namespace_query" "$pod_query")
   [ $? -ne 0 ] && echo "$result" && return $(_kube_fzf_teardown 1)
