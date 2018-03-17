@@ -28,6 +28,9 @@ _kube_fzf_handler() {
         ;;
       :)
         echo "Option -$OPTARG requires an argument"
+        _kube_fzf_usage
+        return 1
+        ;;
     esac
   done
   shift $((OPTIND - 1))
