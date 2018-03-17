@@ -42,24 +42,33 @@ _kube_fzf_handler() {
 _kube_fzf_fzf_args() {
   local search_query=$1
   local fzf_args="--height=10 --ansi --reverse"
-  [ -n "$search_query" ] && fzf_args="$fzf_args --query=$pod_search_query"
+  [ -n "$search_query" ] && fzf_args="$fzf_args --query=$search_query"
   echo "$fzf_args"
 }
 
 _kube_fzf_search_pod() {
+  local pod_name
   local namespace=$1
   local pod_search_query=$2
-  local namespace_arg="--all-namespaces"
-  local awk_code='{ printf "%s|%s", $1, $2 }'
-  if [ -n "$namespace" ]; then
-    namespace_arg="--namespace=$namespace"
-    awk_code="{ printf \"$namespace|%s\", \$1 }"
+  local pod_fzf_args=$(_kube_fzf_fzf_args "$pod_search_query")
+
+  if [ -z "$namespace" ]; then
+    read namespace pod_name <<< \
+      $(kubectl get pod --all-namespaces --no-headers \
+        | fzf $(printf %s $pod_fzf_args) \
+        | awk '{ print $1, $2 }')
+  else
+    local namespace_fzf_args=$(_kube_fzf_fzf_args "$namespace")
+    namespace=$(kubectl get namespaces --no-headers \
+      | fzf $(printf %s $namespace_fzf_args) --select-1 \
+      | awk '{ print $1 }')
+
+    pod_name=$(kubectl get pod --namespace=$namespace --no-headers \
+      | fzf $(printf %s $pod_fzf_args) \
+      | awk '{ print $1 }')
   fi
-  local fzf_args=$(_kube_fzf_fzf_args "$pod_search_query")
-  local result=$(kubectl get pod $namespace_arg --no-headers \
-    | fzf $(printf %s $fzf_args) \
-    | awk $awk_code)
-  echo $result
+
+  echo "$namespace|$pod_name"
 }
 
 _kube_fzf_echo() {
