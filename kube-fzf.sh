@@ -62,11 +62,13 @@ _kube_fzf_search_pod() {
     namespace=$(kubectl get namespaces --no-headers \
       | fzf $(printf %s $namespace_fzf_args) --select-1 \
       | awk '{ print $1 }')
-
+    namespace=${namespace:=default}
     pod_name=$(kubectl get pod --namespace=$namespace --no-headers \
       | fzf $(printf %s $pod_fzf_args) \
       | awk '{ print $1 }')
   fi
+
+  [ -z "$pod_name" ] && echo "No pods found, namespace: $namespace" && return 1
 
   echo "$namespace|$pod_name"
 }
@@ -84,12 +86,12 @@ _kube_fzf_teardown() {
 }
 
 findpod() {
-  local namespace pod_search_query
+  local namespace_search_query pod_search_query result namespace pod_name
   _kube_fzf_handler "$@" || return $(_kube_fzf_teardown 1)
-  IFS=$'|' read -r namespace pod_search_query <<< "$args"
+  IFS=$'|' read -r namespace_search_query pod_search_query <<< "$args"
 
-  local result=$(_kube_fzf_search_pod "$namespace" "$pod_search_query")
-  [ -z "$result" ] && return $(_kube_fzf_teardown 1)
+  result=$(_kube_fzf_search_pod "$namespace_search_query" "$pod_search_query")
+  [ $? -ne 0 ] && echo "$result" && return $(_kube_fzf_teardown 1)
   IFS=$'|' read -r namespace pod_name <<< "$result"
 
   _kube_fzf_echo "kubectl get pod --namespace='$namespace' --output=wide $pod_name"
@@ -98,15 +100,15 @@ findpod() {
 }
 
 tailpod() {
-  local namespace pod_search_query
+  local namespace_search_query pod_search_query result namespace pod_name
   _kube_fzf_handler "$@" || return $(_kube_fzf_teardown 1)
-  IFS=$'|' read -r namespace pod_search_query <<< "$args"
+  IFS=$'|' read -r namespace_search_query pod_search_query <<< "$args"
 
-  local result=$(_kube_fzf_search_pod "$namespace" "$pod_search_query")
+  result=$(_kube_fzf_search_pod "$namespace_search_query" "$pod_search_query")
+  [ $? -ne 0 ] && echo "$result" && return $(_kube_fzf_teardown 1)
   IFS=$'|' read -r namespace pod_name <<< "$result"
 
   local fzf_args=$(_kube_fzf_fzf_args)
-  [ -z "$result" ] && return $(_kube_fzf_teardown 1)
   local container_name=$(kubectl get pod $pod_name --namespace=$namespace --output=jsonpath='{.spec.containers[*].name}' \
     | fzf $(printf %s $fzf_args) --select-1)
 
