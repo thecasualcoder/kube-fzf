@@ -54,8 +54,8 @@ _kube_fzf_findpod() {
   fi
   local fzf_args=$(_kube_fzf_fzf_args "$pod_search_query")
   local pod_name=$(kubectl get pod $namespace_arg --no-headers \
-    | awk -v field="$pod_name_field" '{ print $field }' \
-    | fzf $(printf %s $fzf_args))
+    | fzf $(printf %s $fzf_args) \
+    | awk -v field="$pod_name_field" '{ print $field }')
   echo $pod_name
 }
 
