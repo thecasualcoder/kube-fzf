@@ -30,11 +30,11 @@ source ~/.bashrc
 ## Usage
 
 ```
-<function_name> [-n <namespace>] [-p <pod-search-query>] [-c <container-search-query>]
+<function_name> [-n <namespace>] [pod-search-query]
 ```
 
 ```
-<getpod|findpod|tailpod> [-n <namespace>] [-p <pod-search-query>] [-c <container-search-query>]
+<findpod|tailpod> [-n <namespace>] [pod-search-query]
 ```
 
 ![kube-fzf Demo](/demo.gif)
