@@ -80,9 +80,10 @@ findpod() {
   IFS=$'|' read -r namespace pod_search_query <<< "$args"
 
   local result=$(_kube_fzf_search_pod "$namespace" "$pod_search_query")
+  [ -z "$result" ] && return $(_kube_fzf_teardown 1)
   IFS=$'|' read -r namespace pod_name <<< "$result"
-  _kube_fzf_echo "kubectl get pod --namespace='$namespace' --output=wide $pod_name"
 
+  _kube_fzf_echo "kubectl get pod --namespace='$namespace' --output=wide $pod_name"
   kubectl get pod --namespace=$namespace --output=wide $pod_name
   return $(_kube_fzf_teardown 0)
 }
@@ -96,6 +97,7 @@ tailpod() {
   IFS=$'|' read -r namespace pod_name <<< "$result"
 
   local fzf_args=$(_kube_fzf_fzf_args)
+  [ -z "$result" ] && return $(_kube_fzf_teardown 1)
   local container_name=$(kubectl get pod $pod_name --namespace=$namespace --output=jsonpath='{.spec.containers[*].name}' \
     | fzf $(printf %s $fzf_args) --select-1)
 
