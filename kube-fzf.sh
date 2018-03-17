@@ -38,7 +38,7 @@ _kube_fzf_handler() {
 
 _kube_fzf_fzf_args() {
   local search_query=$1
-  local fzf_args="--height=10 --ansi"
+  local fzf_args="--height=10 --ansi --reverse"
   [ -n "$search_query" ] && fzf_args="$fzf_args --query=$pod_search_query"
   echo "$fzf_args"
 }
