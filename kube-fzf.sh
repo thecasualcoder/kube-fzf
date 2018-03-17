@@ -1,13 +1,19 @@
 #! /bin/bash
 
 _kube_fzf_usage() {
-  cat <<EOF
-USAGE:
-
-<function_name> [-n <namespace-query>] [pod-query]
-
-<findpod|tailpod> [-n <namespace-query>] [pod-query]
-EOF
+  local func=$1
+  echo "\nUSAGE:\n"
+  case $func in
+    findpod)
+      echo "findpod [-n <namespace-query>] [pod-query]"
+      ;;
+    tailpod)
+      echo "tailpod [-n <namespace-query>] [pod-query]"
+      ;;
+    execpod)
+      echo "execpod [-n <namespace-query>] [pod-query] <command>"
+      ;;
+  esac
 }
 
 _kube_fzf_handler() {
@@ -19,20 +25,20 @@ _kube_fzf_handler() {
   while getopts ":hn:" opt; do
     case $opt in
       h)
-        _kube_fzf_usage
+        _kube_fzf_usage "$func"
         return 1
         ;;
       n)
         namespace_query="$OPTARG"
         ;;
       \?)
-        echo "Invalid Option: -$OPTARG\n"
-        _kube_fzf_usage
+        echo "Invalid Option: -$OPTARG."
+        _kube_fzf_usage "$func"
         return 1
         ;;
       :)
-        echo "Option -$OPTARG requires an argument"
-        _kube_fzf_usage
+        echo "Option -$OPTARG requires an argument."
+        _kube_fzf_usage "$func"
         return 1
         ;;
     esac
@@ -43,13 +49,13 @@ _kube_fzf_handler() {
   if [ "$func" = "execpod" ]; then
     if [ $# -eq 1 ]; then
       cmd=$1
-      [ -z "$cmd" ] && echo "Command required\n" && _kube_fzf_usage && return 1
+      [ -z "$cmd" ] && echo "Command required." && _kube_fzf_usage "$func" && return 1
     elif [ $# -eq 2 ]; then
       pod_query=$1
       cmd=$2
-      [ -z "$cmd" ] && echo "Command required\n" && _kube_fzf_usage && return 1
+      [ -z "$cmd" ] && echo "Command required." && _kube_fzf_usage "$func" && return 1
     else
-      [ -z "$cmd" ] && echo "Command required\n" && _kube_fzf_usage && return 1
+      [ -z "$cmd" ] && echo "Command required." && _kube_fzf_usage "$func" && return 1
     fi
   else
     pod_query=$1
