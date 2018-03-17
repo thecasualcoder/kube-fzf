@@ -6,7 +6,7 @@ USAGE:
 
 <function_name> [-n <namespace>] [pod-search-query]
 
-<getpod|findpod|tailpod> [-n <namespace>] [pod-search-query]
+<findpod|tailpod> [-n <namespace>] [pod-search-query]
 EOF
 }
 
@@ -72,14 +72,6 @@ _kube_fzf_teardown() {
 }
 
 findpod() {
-  local namespace pod_search_query
-  _kube_fzf_handler "$@" || return $(_kube_fzf_teardown 1)
-  IFS=$'|' read -r namespace pod_search_query <<< "$args"
-  _kube_fzf_findpod "$namespace" "$pod_search_query"
-  return $(_kube_fzf_teardown 0)
-}
-
-getpod() {
   local namespace pod_search_query
   _kube_fzf_handler "$@" || return $(_kube_fzf_teardown 1)
   IFS=$'|' read -r namespace pod_search_query <<< "$args"
