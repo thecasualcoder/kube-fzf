@@ -43,20 +43,20 @@ _kube_fzf_fzf_args() {
   echo "$fzf_args"
 }
 
-_kube_fzf_findpod() {
+_kube_fzf_search_pod() {
   local namespace=$1
   local pod_search_query=$2
   local namespace_arg="--all-namespaces"
-  local pod_name_field=2
+  local awk_code='{ printf "%s|%s", $1, $2 }'
   if [ -n "$namespace" ]; then
     namespace_arg="--namespace=$namespace"
-    pod_name_field=1
+    awk_code="{ printf \"$namespace|%s\", \$1 }"
   fi
   local fzf_args=$(_kube_fzf_fzf_args "$pod_search_query")
-  local pod_name=$(kubectl get pod $namespace_arg --no-headers \
+  local result=$(kubectl get pod $namespace_arg --no-headers \
     | fzf $(printf %s $fzf_args) \
-    | awk -v field="$pod_name_field" '{ print $field }')
-  echo $pod_name
+    | awk $awk_code)
+  echo $result
 }
 
 _kube_fzf_echo() {
@@ -75,8 +75,11 @@ findpod() {
   local namespace pod_search_query
   _kube_fzf_handler "$@" || return $(_kube_fzf_teardown 1)
   IFS=$'|' read -r namespace pod_search_query <<< "$args"
-  local pod_name=$(_kube_fzf_findpod "$namespace" "$pod_search_query")
+
+  local result=$(_kube_fzf_search_pod "$namespace" "$pod_search_query")
+  IFS=$'|' read -r namespace pod_name <<< "$result"
   _kube_fzf_echo "kubectl get pod --namespace='$namespace' --output=wide $pod_name"
+
   kubectl get pod --namespace=$namespace --output=wide $pod_name
   return $(_kube_fzf_teardown 0)
 }
@@ -85,10 +88,14 @@ tailpod() {
   local namespace pod_search_query
   _kube_fzf_handler "$@" || return $(_kube_fzf_teardown 1)
   IFS=$'|' read -r namespace pod_search_query <<< "$args"
-  local pod_name=$(_kube_fzf_findpod "$namespace" "$pod_search_query")
+
+  local result=$(_kube_fzf_search_pod "$namespace" "$pod_search_query")
+  IFS=$'|' read -r namespace pod_name <<< "$result"
+
   local fzf_args=$(_kube_fzf_fzf_args)
   local container_name=$(kubectl get pod $pod_name --namespace=$namespace --output=jsonpath='{.spec.containers[*].name}' \
     | fzf $(printf %s $fzf_args) --select-1)
+
   _kube_fzf_echo "kubectl logs --namespace='$namespace' --follow $pod_name $container_name"
   kubectl logs --namespace=$namespace --follow $pod_name $container_name
   return $(_kube_fzf_teardown 0)
