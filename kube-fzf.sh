@@ -41,7 +41,8 @@ _kube_fzf_handler() {
 
 _kube_fzf_fzf_args() {
   local search_query=$1
-  local fzf_args="--height=10 --ansi --reverse"
+  local extra_args=$2
+  local fzf_args="--height=10 --ansi --reverse $extra_args"
   [ -n "$search_query" ] && fzf_args="$fzf_args --query=$search_query"
   echo "$fzf_args"
 }
@@ -58,9 +59,9 @@ _kube_fzf_search_pod() {
         | fzf $(printf %s $pod_fzf_args) \
         | awk '{ print $1, $2 }')
   else
-    local namespace_fzf_args=$(_kube_fzf_fzf_args "$namespace")
+    local namespace_fzf_args=$(_kube_fzf_fzf_args "$namespace" "--select-1")
     namespace=$(kubectl get namespaces --no-headers \
-      | fzf $(printf %s $namespace_fzf_args) --select-1 \
+      | fzf $(printf %s $namespace_fzf_args) \
       | awk '{ print $1 }')
     namespace=${namespace:=default}
     pod_name=$(kubectl get pod --namespace=$namespace --no-headers \
@@ -108,9 +109,9 @@ tailpod() {
   [ $? -ne 0 ] && echo "$result" && return $(_kube_fzf_teardown 1)
   IFS=$'|' read -r namespace pod_name <<< "$result"
 
-  local fzf_args=$(_kube_fzf_fzf_args)
+  local fzf_args=$(_kube_fzf_fzf_args "" "--select-1")
   local container_name=$(kubectl get pod $pod_name --namespace=$namespace --output=jsonpath='{.spec.containers[*].name}' \
-    | fzf $(printf %s $fzf_args) --select-1)
+    | fzf $(printf %s $fzf_args))
 
   _kube_fzf_echo "kubectl logs --namespace='$namespace' --follow $pod_name $container_name"
   kubectl logs --namespace=$namespace --follow $pod_name $container_name
