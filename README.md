@@ -55,4 +55,24 @@ execpod -h for help
 
 **Note:** If there is only one match for `<namespace-query>` then it is selected automatically.
 
-![kube-fzf Demo](/demo.gif)
+## Demo
+
+### `findpod`
+
+![Demo for findpod](/demo/findpod.gif)
+
+### `tailpod`
+
+![Demo for tailpod](/demo/tailpod.gif)
+
+### `execpod`
+![Demo for execpod](/demo/execpod.gif)
+
+### fzf Namespace (only when no match found for the given namespace)
+
+![Demo for wrong namespace](/demo/namespace.gif)
+
+### fzf Containers inside a Pod
+
+![Demo for fzf containers inside a pod](/demo/containers.gif)
+
