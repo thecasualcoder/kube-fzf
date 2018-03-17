@@ -2,45 +2,38 @@
 
 _kube_fzf_usage() {
   cat <<EOF
-Unknown argument: $1
-
 USAGE:
 
-<function_name> [-n <namespace>] [-p <pod-search-query>] [-c <container-search-query>]
+<function_name> [-n <namespace>] [pod-search-query]
 
-<getpod|findpod|tailpod> [-n <namespace>] [-p <pod-search-query>] [-c <container-search-query>]
+<getpod|findpod|tailpod> [-n <namespace>] [pod-search-query]
 EOF
 }
 
 _kube_fzf_handler() {
-  local namespace pod_search_query
-
-  while [ $# -gt 0 ]
-  do
-    local key="$1"
-    case $key in
-      -n)
-        namespace="$2"
-        shift
-        shift
-        ;;
-      -p)
-        pod_search_query="$2"
-        shift
-        shift
-        ;;
-      -c)
-        container_search_query="$2"
-        shift
-        shift
-        ;;
-      *)
-        _kube_fzf_usage "$1"
+  local opt
+  while getopts ":hn:" opt; do
+    case $opt in
+      h)
+        _kube_fzf_usage
         return 1
+        ;;
+      n)
+        local namespace="$OPTARG"
+        ;;
+      \?)
+        echo "Invalid Option: -$OPTARG\n"
+        _kube_fzf_usage
+        return 1
+        ;;
+      :)
+        echo "Option -$OPTARG requires an argument"
     esac
   done
+  shift $((OPTIND - 1))
+  [ -n "$1" ] && local pod_search_query=$1
 
-  args="$namespace|$pod_search_query|$container_search_query"
+  args="$namespace|$pod_search_query"
   return 0
 }
 
@@ -75,18 +68,18 @@ _kube_fzf_echo() {
 }
 
 findpod() {
-  local namespace pod_search_query _container_search_query
+  local namespace pod_search_query
   _kube_fzf_handler "$@" || return 1
-  IFS=$'|' read -r namespace pod_search_query _container_search_query <<< "$args"
+  IFS=$'|' read -r namespace pod_search_query <<< "$args"
   _kube_fzf_findpod "$namespace" "$pod_search_query"
   _kube_fzf_cleanup
   return 0
 }
 
 getpod() {
-  local namespace pod_search_query _container_search_query
+  local namespace pod_search_query
   _kube_fzf_handler "$@" || return 1
-  IFS=$'|' read -r namespace pod_search_query _container_search_query <<< "$args"
+  IFS=$'|' read -r namespace pod_search_query <<< "$args"
   local pod_name=$(_kube_fzf_findpod "$namespace" "$pod_search_query")
   _kube_fzf_echo "kubectl get pod --namespace='$namespace' --output=wide $pod_name"
   kubectl get pod --namespace=$namespace --output=wide $pod_name
@@ -94,11 +87,11 @@ getpod() {
 }
 
 tailpod() {
-  local namespace pod_search_query container_search_query
+  local namespace pod_search_query
   _kube_fzf_handler "$@" || return 1
-  IFS=$'|' read -r namespace pod_search_query container_search_query <<< "$args"
+  IFS=$'|' read -r namespace pod_search_query <<< "$args"
   local pod_name=$(_kube_fzf_findpod "$namespace" "$pod_search_query")
-  local fzf_args=$(_kube_fzf_fzf_args "$container_search_query")
+  local fzf_args=$(_kube_fzf_fzf_args)
   local container_name=$(kubectl get pod $pod_name --output=jsonpath='{.spec.containers[*].name}' \
     | fzf $(printf %s $fzf_args) --select-1)
   _kube_fzf_echo "kubectl logs --namespace='$namespace' --follow $pod_name $container_name"
