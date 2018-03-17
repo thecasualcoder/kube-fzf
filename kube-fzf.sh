@@ -113,8 +113,8 @@ tailpod() {
   local container_name=$(kubectl get pod $pod_name --namespace=$namespace --output=jsonpath='{.spec.containers[*].name}' \
     | fzf $(printf %s $fzf_args))
 
-  _kube_fzf_echo "kubectl logs --namespace='$namespace' --follow $pod_name $container_name"
-  kubectl logs --namespace=$namespace --follow $pod_name $container_name
+  _kube_fzf_echo "kubectl logs --namespace='$namespace' --follow $pod_name -c $container_name"
+  kubectl logs --namespace=$namespace --follow $pod_name -c $container_name
   return $(_kube_fzf_teardown 0)
 }
 
