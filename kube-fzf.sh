@@ -15,7 +15,7 @@ _kube_fzf_usage() {
       ;;
   esac
   cat << EOF
--a                    -  Search in all namespaces"
+-a                    -  Search in all namespaces
 -n <namespace-query>  -  Find namespaces matching <namespace-query> and do fzf.
                          If there is only one match then it is selected automatically.
 -h                    -  Show help
