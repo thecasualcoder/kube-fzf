@@ -80,10 +80,14 @@ _kube_fzf_search_pod() {
   local pod_fzf_args=$(_kube_fzf_fzf_args "$pod_query")
 
   if [ -z "$namespace" ]; then
-    read namespace pod_name <<< \
-      $(kubectl get pod --all-namespaces --no-headers \
+      context=$(kubectl config current-context)
+      namespace=$(kubectl config get-contexts --no-headers $context \
+        | awk '{ print $5 }')
+
+      namespace=${namespace:=default}
+      pod_name=$(kubectl get pod --namespace=$namespace --no-headers \
         | fzf $(printf %s $pod_fzf_args) \
-        | awk '{ print $1, $2 }')
+        | awk '{ print $1 }')
   else
     local namespace_fzf_args=$(_kube_fzf_fzf_args "$namespace" "--select-1")
     namespace=$(kubectl get namespaces --no-headers \
