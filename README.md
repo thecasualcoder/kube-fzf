@@ -32,28 +32,29 @@ source ~/.bashrc
 ### `findpod`
 
 ```
-findpod [-n <namespace-query>] [pod-query]
-
-findpod -h for help
+findpod [-a | -n <namespace-query>] [pod-query]
 ```
 
 ### `tailpod`
 
 ```
-tailpod [-n <namespace-query>] [pod-query]
-
-tailpod -h for help
+tailpod [-a | -n <namespace-query>] [pod-query]
 ```
 
 ### `execpod`
 
 ```
-execpod [-n <namespace-query>] [pod-query] <command>
-
-execpod -h for help
+execpod [-a | -n <namespace-query>] [pod-query] <command>
 ```
 
-**Note:** If there is only one match for `<namespace-query>` then it is selected automatically.
+### Options
+
+```
+-a                    -  Search in all namespaces"
+-n <namespace-query>  -  Find namespaces matching <namespace-query> and do fzf.
+                         If there is only one match then it is selected automatically.
+-h                    -  Show help
+```
 
 ## Demo
 

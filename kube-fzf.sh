@@ -5,16 +5,21 @@ _kube_fzf_usage() {
   echo "\nUSAGE:\n"
   case $func in
     findpod)
-      echo "findpod [-n <namespace-query>] [pod-query]"
+      echo "findpod [-a | -n <namespace-query>] [pod-query]\n"
       ;;
     tailpod)
-      echo "tailpod [-n <namespace-query>] [pod-query]"
+      echo "tailpod [-a | -n <namespace-query>] [pod-query]\n"
       ;;
     execpod)
-      echo "execpod [-n <namespace-query>] [pod-query] <command>"
+      echo "execpod [-a | -n <namespace-query>] [pod-query] <command>\n"
       ;;
   esac
-  echo "\n$func -h for help"
+  cat << EOF
+-a                    -  Search in all namespaces"
+-n <namespace-query>  -  Find namespaces matching <namespace-query> and do fzf.
+                         If there is only one match then it is selected automatically.
+-h                    -  Show help
+EOF
 }
 
 _kube_fzf_handler() {
@@ -23,7 +28,7 @@ _kube_fzf_handler() {
 
   shift $((OPTIND))
 
-  while getopts ":hn:" opt; do
+  while getopts ":hn:a" opt; do
     case $opt in
       h)
         _kube_fzf_usage "$func"
@@ -31,6 +36,9 @@ _kube_fzf_handler() {
         ;;
       n)
         namespace_query="$OPTARG"
+        ;;
+      a)
+        namespace_query="--all-namespaces"
         ;;
       \?)
         echo "Invalid Option: -$OPTARG."
@@ -88,6 +96,10 @@ _kube_fzf_search_pod() {
       pod_name=$(kubectl get pod --namespace=$namespace --no-headers \
         | fzf $(printf %s $pod_fzf_args) \
         | awk '{ print $1 }')
+  elif [ "$namespace_query" = "--all-namespaces" ]; then
+    read namespace pod_name <<< $(kubectl get pod --all-namespaces --no-headers \
+        | fzf $(printf %s $pod_fzf_args) \
+      | awk '{ print $1, $2 }')
   else
     local namespace_fzf_args=$(_kube_fzf_fzf_args "$namespace_query" "--select-1")
     namespace=$(kubectl get namespaces --no-headers \
