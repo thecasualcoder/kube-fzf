@@ -66,14 +66,19 @@ execpod [-a | -n <namespace-query>] [pod-query] <command>
 
 ![Demo for tailpod](/demo/tailpod.gif)
 
+## `tailpod` - multiple containers
+
+![Demo for tailpod with multiple containers](/demo/tailpod-multiple-containers.gif)
+
 ### `execpod`
+
 ![Demo for execpod](/demo/execpod.gif)
+
+### `execpod` - multiple containers
+
+![Demo for execpod with multiple containers](/demo/execpod-multiple-containers.gif)
 
 ### fzf Namespace (only when no match found for the given namespace)
 
-![Demo for wrong namespace](/demo/namespace.gif)
-
-### fzf Containers inside a Pod
-
-![Demo for fzf containers inside a pod](/demo/containers.gif)
+![Demo for wrong namespace](/demo/namespace-matching.gif)
 
