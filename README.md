@@ -47,6 +47,12 @@ tailpod [-a | -n <namespace-query>] [pod-query]
 execpod [-a | -n <namespace-query>] [pod-query] <command>
 ```
 
+### `describepod`
+
+```
+describepod [-a | -n <namespace-query>] [pod-query]
+```
+
 ### Options
 
 ```
