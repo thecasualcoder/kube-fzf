@@ -35,6 +35,12 @@ source ~/.bashrc
 findpod [-a | -n <namespace-query>] [pod-query]
 ```
 
+### `describepod`
+
+```
+describepod [-a | -n <namespace-query>] [pod-query]
+```
+
 ### `tailpod`
 
 ```
@@ -45,12 +51,6 @@ tailpod [-a | -n <namespace-query>] [pod-query]
 
 ```
 execpod [-a | -n <namespace-query>] [pod-query] <command>
-```
-
-### `describepod`
-
-```
-describepod [-a | -n <namespace-query>] [pod-query]
 ```
 
 ### Options
@@ -67,6 +67,10 @@ describepod [-a | -n <namespace-query>] [pod-query]
 ### `findpod`
 
 ![Demo for findpod](/demo/findpod.gif)
+
+### `describepod`
+
+![Demo for describepod](/demo/describepod.gif)
 
 ### `tailpod`
 
