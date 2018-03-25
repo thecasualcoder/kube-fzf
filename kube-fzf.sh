@@ -13,6 +13,9 @@ _kube_fzf_usage() {
     execpod)
       echo "execpod [-a | -n <namespace-query>] [pod-query] <command>\n"
       ;;
+    describepod)
+      echo "describepod [-a | -n <namespace-query>] [pod-query]\n"
+      ;;
   esac
   cat << EOF
 -a                    -  Search in all namespaces
@@ -142,6 +145,22 @@ findpod() {
 
   _kube_fzf_echo "kubectl get pod --namespace='$namespace' --output=wide $pod_name"
   kubectl get pod --namespace=$namespace --output=wide $pod_name
+  return $(_kube_fzf_teardown 0)
+}
+
+describepod() {
+  local namespace_query pod_query result namespace pod_name
+
+  _kube_fzf_handler "$0" "$@" || return $(_kube_fzf_teardown 1)
+  namespace_query=$(echo $args | awk -F '|' '{ print $1 }')
+  pod_query=$(echo $args | awk -F '|' '{ print $2 }')
+
+  result=$(_kube_fzf_search_pod "$namespace_query" "$pod_query")
+  [ $? -ne 0 ] && echo "$result" && return $(_kube_fzf_teardown 1)
+  IFS=$'|' read -r namespace pod_name <<< "$result"
+
+  _kube_fzf_echo "kubectl describe pod $pod_name --namespace='$namespace'"
+  kubectl describe pod $pod_name --namespace=$namespace 
   return $(_kube_fzf_teardown 0)
 }
 
