@@ -160,7 +160,7 @@ describepod() {
   IFS=$'|' read -r namespace pod_name <<< "$result"
 
   _kube_fzf_echo "kubectl describe pod $pod_name --namespace='$namespace'"
-  kubectl describe pod $pod_name --namespace=$namespace 
+  kubectl describe pod $pod_name --namespace=$namespace
   return $(_kube_fzf_teardown 0)
 }
 
