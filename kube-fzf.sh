@@ -2,19 +2,19 @@
 
 _kube_fzf_usage() {
   local func=$1
-  echo "\nUSAGE:\n"
+  echo -e "\nUSAGE:\n"
   case $func in
     findpod)
-      echo "findpod [-a | -n <namespace-query>] [pod-query]\n"
+      echo -e "findpod [-a | -n <namespace-query>] [pod-query]\n"
       ;;
     tailpod)
-      echo "tailpod [-a | -n <namespace-query>] [pod-query]\n"
+      echo -e "tailpod [-a | -n <namespace-query>] [pod-query]\n"
       ;;
     execpod)
-      echo "execpod [-a | -n <namespace-query>] [pod-query] <command>\n"
+      echo -e "execpod [-a | -n <namespace-query>] [pod-query] <command>\n"
       ;;
     describepod)
-      echo "describepod [-a | -n <namespace-query>] [pod-query]\n"
+      echo -e "describepod [-a | -n <namespace-query>] [pod-query]\n"
       ;;
   esac
   cat << EOF
@@ -27,6 +27,7 @@ EOF
 
 _kube_fzf_handler() {
   local opt namespace_query pod_query cmd
+  local OPTIND=1
   local func=$1
 
   shift $((OPTIND))
@@ -97,21 +98,21 @@ _kube_fzf_search_pod() {
 
       namespace=${namespace:=default}
       pod_name=$(kubectl get pod --namespace=$namespace --no-headers \
-        | fzf $(printf %s $pod_fzf_args) \
+        | fzf $pod_fzf_args \
         | awk '{ print $1 }')
   elif [ "$namespace_query" = "--all-namespaces" ]; then
     read namespace pod_name <<< $(kubectl get pod --all-namespaces --no-headers \
-        | fzf $(printf %s $pod_fzf_args) \
+        | fzf $pod_fzf_args \
       | awk '{ print $1, $2 }')
   else
     local namespace_fzf_args=$(_kube_fzf_fzf_args "$namespace_query" "--select-1")
     namespace=$(kubectl get namespaces --no-headers \
-      | fzf $(printf %s $namespace_fzf_args) \
+      | fzf $namespace_fzf_args \
       | awk '{ print $1 }')
 
     namespace=${namespace:=default}
     pod_name=$(kubectl get pod --namespace=$namespace --no-headers \
-      | fzf $(printf %s $pod_fzf_args) \
+      | fzf $pod_fzf_args \
       | awk '{ print $1 }')
   fi
 
@@ -135,7 +136,7 @@ _kube_fzf_teardown() {
 findpod() {
   local namespace_query pod_query result namespace pod_name
 
-  _kube_fzf_handler "$0" "$@" || return $(_kube_fzf_teardown 1)
+  _kube_fzf_handler "findpod" "$@" || return $(_kube_fzf_teardown 1)
   namespace_query=$(echo $args | awk -F '|' '{ print $1 }')
   pod_query=$(echo $args | awk -F '|' '{ print $2 }')
 
@@ -151,7 +152,7 @@ findpod() {
 describepod() {
   local namespace_query pod_query result namespace pod_name
 
-  _kube_fzf_handler "$0" "$@" || return $(_kube_fzf_teardown 1)
+  _kube_fzf_handler "describepod" "$@" || return $(_kube_fzf_teardown 1)
   namespace_query=$(echo $args | awk -F '|' '{ print $1 }')
   pod_query=$(echo $args | awk -F '|' '{ print $2 }')
 
@@ -167,7 +168,7 @@ describepod() {
 tailpod() {
   local namespace_query pod_query result namespace pod_name
 
-  _kube_fzf_handler "$0" "$@" || return $(_kube_fzf_teardown 1)
+  _kube_fzf_handler "tailpod" "$@" || return $(_kube_fzf_teardown 1)
   namespace_query=$(echo $args | awk -F '|' '{ print $1 }')
   pod_query=$(echo $args | awk -F '|' '{ print $2 }')
 
@@ -178,7 +179,7 @@ tailpod() {
   local fzf_args=$(_kube_fzf_fzf_args "" "--select-1")
   local container_name=$(kubectl get pod $pod_name --namespace=$namespace --output=jsonpath='{.spec.containers[*].name}' \
     | tr ' ' '\n' \
-    | fzf $(printf %s $fzf_args))
+    | fzf $fzf_args)
 
   _kube_fzf_echo "kubectl logs --namespace='$namespace' --follow $pod_name -c $container_name"
   kubectl logs --namespace=$namespace --follow $pod_name -c $container_name
@@ -188,7 +189,7 @@ tailpod() {
 execpod() {
   local namespace_query pod_query cmd result namespace pod_name
 
-  _kube_fzf_handler "$0" "$@" || return $(_kube_fzf_teardown 1)
+  _kube_fzf_handler "execpod" "$@" || return $(_kube_fzf_teardown 1)
   IFS=$'|' read -r namespace_query pod_query cmd <<< "$args"
 
   result=$(_kube_fzf_search_pod "$namespace_query" "$pod_query")
@@ -198,7 +199,7 @@ execpod() {
   local fzf_args=$(_kube_fzf_fzf_args "" "--select-1")
   local container_name=$(kubectl get pod $pod_name --namespace=$namespace --output=jsonpath='{.spec.containers[*].name}' \
     | tr ' ' '\n' \
-    | fzf $(printf %s $fzf_args))
+    | fzf $fzf_args)
 
   _kube_fzf_echo "kubectl exec --namespace='$namespace' $pod_name -c $container_name -it $cmd"
   kubectl exec --namespace=$namespace $pod_name -c $container_name -it $cmd
