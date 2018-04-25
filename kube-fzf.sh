@@ -62,13 +62,13 @@ _kube_fzf_handler() {
   if [ "$func" = "execpod" ]; then
     if [ $# -eq 1 ]; then
       cmd=$1
-      [ -z "$cmd" ] && echo "Command required." && _kube_fzf_usage "$func" && return 1
+      [ -z "$cmd" ] && cmd="sh"
     elif [ $# -eq 2 ]; then
       pod_query=$1
       cmd=$2
       [ -z "$cmd" ] && echo "Command required." && _kube_fzf_usage "$func" && return 1
     else
-      [ -z "$cmd" ] && echo "Command required." && _kube_fzf_usage "$func" && return 1
+      [ -z "$cmd" ] && cmd="sh"
     fi
   else
     pod_query=$1
