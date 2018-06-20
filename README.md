@@ -8,8 +8,8 @@ Shell functions using [`kubectl`](https://kubernetes.io/docs/reference/kubectl/o
 
 ## Prerequisite
 
-[`fzf`](https://github.com/junegunn/fzf)
-[`kubectx`](https://github.com/ahmetb/kubectx)
+* [`fzf`](https://github.com/junegunn/fzf)
+* [`kubectx`](https://github.com/ahmetb/kubectx)
 
 ## Install
 
