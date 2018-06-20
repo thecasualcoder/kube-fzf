@@ -2,19 +2,21 @@
 
 Shell functions using [`kubectl`](https://kubernetes.io/docs/reference/kubectl/overview/) and [`fzf`](https://github.com/junegunn/fzf) to enable command-line fuzzy searching of [Kubernetes](https://kubernetes.io/) [Pods](https://kubernetes.io/docs/concepts/workloads/pods/pod/). It helps to interactively
 
-- search for a Pod
-- tail a container of a Pod
-- exec in to a container of a Pod
+* search for a Pod
+* tail a container of a Pod
+* exec in to a container of a Pod
 
 ## Prerequisite
 
-[`fzf`](https://github.com/junegunn/fzf) must be available in the PATH
+[`fzf`](https://github.com/junegunn/fzf)
+[`kubectx`](https://github.com/ahmetb/kubectx)
 
 ## Install
 
 ```
 git clone https://github.com/arunvelsriram/kube-fzf.git ~/.kube-fzf
 ```
+
 ```
 # zsh users
 echo "[ -f ~/.kube-fzf/kube-fzf.sh ] && source ~/.kube-fzf/kube-fzf.sh" >> ~/.zshrc
@@ -53,7 +55,19 @@ tailpod [-a | -n <namespace-query>] [pod-query]
 execpod [-a | -n <namespace-query>] [pod-query] <command>
 ```
 
-### Options
+### `chctx`
+
+```
+chctx [- | <context-query>]
+```
+
+### `chns`
+
+```
+chns [- | <namespace-query>]
+```
+
+#### Options
 
 ```
 -a                    -  Search in all namespaces
@@ -91,4 +105,3 @@ execpod [-a | -n <namespace-query>] [pod-query] <command>
 ### fzf Namespace (only when no match found for the given namespace)
 
 ![Demo for wrong namespace](/demo/namespace-matching.gif)
-
