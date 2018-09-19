@@ -9,7 +9,6 @@ Shell functions using [`kubectl`](https://kubernetes.io/docs/reference/kubectl/o
 ## Prerequisite
 
 * [`fzf`](https://github.com/junegunn/fzf)
-* [`kubectx`](https://github.com/ahmetb/kubectx)
 
 ## Install
 
@@ -61,18 +60,6 @@ execpod [-a | -n <namespace-query>] [pod-query] <command>
 pfpod [-a | -n <namespace-query>] [pod-query] <port>
 ```
 
-### `chctx`
-
-```
-chctx [- | <context-query>]
-```
-
-### `chns`
-
-```
-chns [- | <namespace-query>]
-```
-
 #### Options
 
 ```
@@ -111,3 +98,7 @@ chns [- | <namespace-query>]
 ### fzf Namespace (only when no match found for the given namespace)
 
 ![Demo for wrong namespace](/demo/namespace-matching.gif)
+
+## Similar Projects
+
+For switching Kubernetes contexts and namespaces interactively from the command-line use [`kubectx`](https://github.com/ahmetb/kubectx)

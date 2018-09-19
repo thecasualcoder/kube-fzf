@@ -222,27 +222,3 @@ pfpod() {
   kubectl port-forward --namespace=$namespace $pod_name $port
   return $(_kube_fzf_teardown 0)
 }
-
-chctx() {
-  local context fzf_args
-  context=$1
-  if [ "$context" = "-" ];
-  then
-    kubectx -
-  else
-    fzf_args=$(_kube_fzf_fzf_args "$context" "--select-1")
-    kubectx $(kubectl config get-contexts -o name | fzf $fzf_args)
-  fi
-}
-
-chns() {
-  local namespace fzf_args
-  namespace=$1
-  if [ "$namespace" = "-" ];
-  then
-    kubens -
-  else
-    fzf_args=$(_kube_fzf_fzf_args "$namespace" "--select-1")
-    kubens $(kubectl get namespace --no-headers -o custom-columns=:metadata.name | fzf $fzf_args)
-  fi
-}
