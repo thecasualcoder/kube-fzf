@@ -55,6 +55,12 @@ tailpod [-a | -n <namespace-query>] [pod-query]
 execpod [-a | -n <namespace-query>] [pod-query] <command>
 ```
 
+### `pfpod`
+
+```
+pfpod [-a | -n <namespace-query>] [pod-query] <port>
+```
+
 ### `chctx`
 
 ```
