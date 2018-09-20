@@ -13,6 +13,9 @@ _kube_fzf_usage() {
     execpod)
       echo -e "execpod [-a | -n <namespace-query>] [pod-query] <command>\n"
       ;;
+    pfpod)
+      echo -e "pfpod [-a | -n <namespace-query>] [pod-query] <port>\n"
+      ;;
     describepod)
       echo -e "describepod [-a | -n <namespace-query>] [pod-query]\n"
       ;;
@@ -72,6 +75,25 @@ _kube_fzf_handler() {
     fi
   else
     pod_query=$1
+  fi
+
+  if [ "$func" = "pfpod" ]; then
+    re='^[0-9]*$'
+    if [ $# -eq 1 ]; then
+      if [[ "$1" =~ "$re" ]]; then
+        cmd=$1
+        pod_query=""
+      else
+        echo "Port required." && _kube_fzf_usage "$func" && return 1
+      fi
+      [ -z "$cmd" ] && echo "Port required." && _kube_fzf_usage "$func" && return 1
+    elif [ $# -eq 2 ]; then
+      pod_query=$1
+      cmd=$2
+      [ -z "$cmd" ] && echo "Port required." && _kube_fzf_usage "$func" && return 1
+    else
+      [ -z "$cmd" ] && echo "Port required." && _kube_fzf_usage "$func" && return 1
+    fi
   fi
 
   args="$namespace_query|$pod_query|$cmd"
@@ -209,7 +231,7 @@ execpod() {
 pfpod() {
   local namespace_query pod_query port result namespace pod_name
 
-  _kube_fzf_handler "execpod" "$@" || return $(_kube_fzf_teardown 1)
+  _kube_fzf_handler "pfpod" "$@" || return $(_kube_fzf_teardown 1)
   IFS=$'|' read -r namespace_query pod_query port <<< "$args"
 
   result=$(_kube_fzf_search_pod "$namespace_query" "$pod_query")
