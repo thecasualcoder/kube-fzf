@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env bash
 
 _kube_fzf_usage() {
   local func=$1
