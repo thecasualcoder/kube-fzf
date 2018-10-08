@@ -36,7 +36,7 @@ _kube_fzf_handler() {
     case $opt in
       h)
         _kube_fzf_usage "$func"
-        return 1
+        return 0
         ;;
       n)
         namespace_query="$OPTARG"
