@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+source ./kube-fzf.sh
+
+findpod() {
+  local namespace_query pod_query result namespace pod_name
+
+  _kube_fzf_handler "findpod" "$@" || return $(_kube_fzf_teardown 1)
+  namespace_query=$(echo $args | awk -F '|' '{ print $1 }')
+  pod_query=$(echo $args | awk -F '|' '{ print $2 }')
+
+  result=$(_kube_fzf_search_pod "$namespace_query" "$pod_query")
+  [ $? -ne 0 ] && echo "$result" && return $(_kube_fzf_teardown 1)
+  IFS=$'|' read -r namespace pod_name <<< "$result"
+
+  _kube_fzf_echo "kubectl get pod --namespace='$namespace' --output=wide $pod_name"
+  kubectl get pod --namespace=$namespace --output=wide $pod_name
+  return $(_kube_fzf_teardown 0)
+}
+
+findpod "$@"

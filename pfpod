@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+source ./kube-fzf.sh
+
+pfpod() {
+  local namespace_query pod_query port result namespace pod_name
+
+  _kube_fzf_handler "execpod" "$@" || return $(_kube_fzf_teardown 1)
+  IFS=$'|' read -r namespace_query pod_query port <<< "$args"
+
+  result=$(_kube_fzf_search_pod "$namespace_query" "$pod_query")
+  [ $? -ne 0 ] && echo "$result" && return $(_kube_fzf_teardown 1)
+  IFS=$'|' read -r namespace pod_name <<< "$result"
+
+  local fzf_args=$(_kube_fzf_fzf_args "" "--select-1")
+
+  _kube_fzf_echo "kubectl port-forward --namespace='$namespace' $pod_name $port"
+  kubectl port-forward --namespace=$namespace $pod_name $port
+  return $(_kube_fzf_teardown 0)
+}
+
+pfpod "$@"
