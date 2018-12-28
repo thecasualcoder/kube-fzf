@@ -30,6 +30,7 @@ sudo ln -s ~/.kube-fzf/execpod /usr/local/bin/execpod
 sudo ln -s ~/.kube-fzf/tailpod /usr/local/bin/tailpod
 sudo ln -s ~/.kube-fzf/describepod /usr/local/bin/describepod
 sudo ln -s ~/.kube-fzf/pfpod /usr/local/bin/pfpod
+sudo ln -s ~/.kube-fzf/kube-fzf.sh  /usr/local/bin/kube-fzf.sh
 ```
 
 ## Usage
