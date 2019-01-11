@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/arunvelsriram/kube-fzf/cmd"
 	"github.com/arunvelsriram/kube-fzf/pkg/k8s/resources"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
@@ -71,6 +72,7 @@ func initKubeconfig() {
 
 func init() {
 	cobra.OnInitialize(initKubeconfig)
+	rootCmd.AddCommand(cmd.VersionCmd)
 	rootCmd.Flags().BoolVarP(&allNamespaces, "all-namespaces", "a", false, "consider all namespaces")
 	rootCmd.Flags().StringVarP(&namespaceName, "namespace", "n", "", "namespace pattern")
 	rootCmd.Flags().BoolVarP(&multiSelect, "multi", "m", true, `find multiple pods
