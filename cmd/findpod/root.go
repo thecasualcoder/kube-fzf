@@ -19,7 +19,7 @@ var allNamespaces bool
 var namespaceName string
 
 var rootCmd = &cobra.Command{
-	Use:   "findpod",
+	Use:   "findpod [pod-name-query]",
 	Short: "Finds a pod",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
