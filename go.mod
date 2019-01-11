@@ -1,6 +1,7 @@
 module github.com/arunvelsriram/kube-fzf
 
 require (
+	cloud.google.com/go v0.34.0 // indirect
 	github.com/gogo/protobuf v1.2.0 // indirect
 	github.com/google/btree v0.0.0-20180813153112-4030bb1f1f0c // indirect
 	github.com/google/gofuzz v0.0.0-20170612174753-24818f796faf // indirect

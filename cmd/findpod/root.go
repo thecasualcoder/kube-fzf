@@ -22,7 +22,6 @@ var rootCmd = &cobra.Command{
 	Short: "Finds a pod",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println()
 		var podNameQuery string
 		if len(args) == 1 {
 			podNameQuery = strings.TrimSpace(args[0])
