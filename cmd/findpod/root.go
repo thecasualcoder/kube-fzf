@@ -18,10 +18,11 @@ import (
 
 var allNamespaces bool
 var namespaceName string
+var multiSelect bool
 
 var rootCmd = &cobra.Command{
 	Use:   "findpod [pod-name-query]",
-	Short: "Finds a pod",
+	Short: "Find pod/pods interactively",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		var podNameQuery string
@@ -45,10 +46,13 @@ var rootCmd = &cobra.Command{
 			panic(err.Error())
 		}
 
-		filteredPods := fzf.FilterMany(podNameQuery, pods)
-		fmt.Println(filteredPods)
-		filteredPod := fzf.FilterOne(podNameQuery, pods)
-		fmt.Println(filteredPod)
+		if multiSelect {
+			filteredPods := fzf.FilterMany(podNameQuery, pods)
+			fmt.Println(filteredPods)
+		} else {
+			filteredPod := fzf.FilterOne(podNameQuery, pods)
+			fmt.Println(filteredPod)
+		}
 	},
 }
 
