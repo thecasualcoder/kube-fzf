@@ -2,27 +2,12 @@ package fzf
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"os"
 	"os/exec"
 	"strings"
 )
-
-func withFilter(command string, input func(in io.WriteCloser)) []string {
-	shell := os.Getenv("SHELL")
-	if len(shell) == 0 {
-		shell = "sh"
-	}
-	cmd := exec.Command(shell, "-c", command)
-	cmd.Stderr = os.Stderr
-	in, _ := cmd.StdinPipe()
-	go func() {
-		input(in)
-		in.Close()
-	}()
-	result, _ := cmd.Output()
-	return strings.Split(string(result), "\n")
-}
 
 type fzfOptions struct {
 	query string
@@ -62,13 +47,37 @@ func newFzfCmd(opts *fzfOptions) *fzfCmd {
 	}
 }
 
+func withFilter(command string, input func(in io.WriteCloser)) []string {
+	shell := os.Getenv("SHELL")
+	if len(shell) == 0 {
+		shell = "sh"
+	}
+	cmd := exec.Command(shell, "-c", command)
+	cmd.Stderr = os.Stderr
+	in, _ := cmd.StdinPipe()
+	go func() {
+		input(in)
+		in.Close()
+	}()
+	result, _ := cmd.Output()
+	return strings.Split(string(result), "\n")
+}
+
+func inputFunc(items []string) func(io.WriteCloser) {
+	return func(in io.WriteCloser) {
+		for _, item := range items {
+			fmt.Fprintln(in, item)
+		}
+	}
+}
+
 // FilterOne interactively filters one item from a list
-func FilterOne(query string, input func(in io.WriteCloser)) string {
+func FilterOne(query string, items []string) string {
 	opts := &fzfOptions{
 		query: query,
 	}
 	cmd := newFzfCmd(opts)
-	result := withFilter(cmd.String(), input)
+	result := withFilter(cmd.String(), inputFunc(items))
 
 	if len(result) == 0 {
 		return ""
@@ -77,12 +86,13 @@ func FilterOne(query string, input func(in io.WriteCloser)) string {
 }
 
 // FilterMany interactively filters many items from a list
-func FilterMany(query string, input func(in io.WriteCloser)) []string {
+func FilterMany(query string, items []string) []string {
 	opts := &fzfOptions{
 		query: query,
 		multi: true,
 	}
 	cmd := newFzfCmd(opts)
-	result := withFilter(cmd.String(), input)
+	result := withFilter(cmd.String(), inputFunc(items))
+
 	return result
 }

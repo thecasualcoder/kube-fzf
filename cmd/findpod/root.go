@@ -7,7 +7,8 @@ import (
 	"strings"
 
 	"github.com/arunvelsriram/kube-fzf/cmd"
-	"github.com/arunvelsriram/kube-fzf/pkg/k8s/resources"
+	"github.com/arunvelsriram/kube-fzf/pkg/fzf"
+	"github.com/arunvelsriram/kube-fzf/pkg/k8sapi"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -39,13 +40,12 @@ var rootCmd = &cobra.Command{
 			panic(err.Error())
 		}
 
-		pods, err := resources.GetPods(clientset, "default")
+		pods, err := k8sapi.GetPods(clientset, "default")
 		if err != nil {
 			panic(err.Error())
 		}
 
-		filteredPod := pods.FilterOne(podNameQuery)
-
+		filteredPod := fzf.FilterOne(podNameQuery, pods)
 		fmt.Println(filteredPod)
 	},
 }
