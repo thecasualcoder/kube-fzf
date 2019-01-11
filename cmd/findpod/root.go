@@ -8,6 +8,7 @@ import (
 	"github.com/arunvelsriram/kube-fzf/pkg/k8s/resources"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 )
@@ -20,20 +21,15 @@ var rootCmd = &cobra.Command{
 	Short: "Finds a pod",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println()
 		var podName string
 		if len(args) == 1 {
 			podName = args[0]
 		}
 		fmt.Println(podName)
 
-		var kubeconfig string
-		home, err := homedir.Dir()
-		if err != nil {
-			panic(err.Error())
-		}
-
-		kubeconfig = filepath.Join(home, ".kube", "config")
-
+		kubeconfig := viper.GetString("kubeconfig")
+		fmt.Println(kubeconfig)
 		config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
 		if err != nil {
 			panic(err.Error())
@@ -61,7 +57,24 @@ func Execute() {
 	}
 }
 
+func initKubeconfig() {
+	if !viper.IsSet("kubeconfig") || viper.GetString("kubeconfig") == "" {
+		home, err := homedir.Dir()
+		if err != nil {
+			panic(err.Error())
+		}
+
+		viper.SetDefault("kubeconfig", filepath.Join(home, ".kube", "config"))
+	}
+}
+
 func init() {
+	cobra.OnInitialize(initKubeconfig)
 	rootCmd.Flags().BoolVarP(&allNamespaces, "all-namespaces", "a", false, "consider all namespaces")
 	rootCmd.Flags().StringVarP(&namespaceName, "namespace", "n", "", "namespace pattern")
+	rootCmd.Flags().BoolVarP(&multiSelect, "multi", "m", true, `find multiple pods
+use tab/shift+tab to select/de-select from the interactive list`)
+	rootCmd.Flags().StringP("kubeconfig", "", "", "path to kubeconfig file (default is $HOME/.kube/config)")
+	viper.BindPFlag("kubeconfig", rootCmd.Flags().Lookup("kubeconfig"))
+	viper.AutomaticEnv()
 }
