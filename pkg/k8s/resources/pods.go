@@ -17,15 +17,25 @@ type Pod struct {
 // Pods represents Pod collection
 type Pods []*Pod
 
-// Find finds a pod by name
 func (pods Pods) find(name string) *Pod {
-	for _, pod := range pods {
-		if pod.Name == name {
-			return pod
+	found := pods.findAll([]string{name})
+	if len(found) == 0 {
+		return nil
+	}
+	return found[0]
+}
+
+func (pods Pods) findAll(names []string) Pods {
+	var found Pods
+	for _, name := range names {
+		for _, pod := range pods {
+			if pod.Name == name {
+				found = append(found, pod)
+				break
+			}
 		}
 	}
-
-	return nil
+	return found
 }
 
 // FilterOne filters one pod by name
@@ -37,6 +47,17 @@ func (pods Pods) FilterOne(nameQuery string) *Pod {
 	})
 	filteredPod := pods.find(filteredPodName)
 	return filteredPod
+}
+
+// FilterMany filters many pods by name
+func (pods Pods) FilterMany(nameQuery string) Pods {
+	filteredPodNames := fzf.FilterMany(nameQuery, func(in io.WriteCloser) {
+		for _, pod := range pods {
+			fmt.Fprintln(in, pod.Name)
+		}
+	})
+	filteredPods := pods.findAll(filteredPodNames)
+	return filteredPods
 }
 
 // GetPods gets all pods from the given namespace

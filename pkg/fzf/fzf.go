@@ -26,10 +26,15 @@ func withFilter(command string, input func(in io.WriteCloser)) []string {
 
 type fzfOptions struct {
 	query string
+	multi bool
 }
 
 func (opts *fzfOptions) String() string {
 	var buffer bytes.Buffer
+	if opts.multi {
+		buffer.WriteString("-m ")
+	}
+
 	if opts.query != "" {
 		buffer.WriteString("-q ")
 		buffer.WriteString(opts.query)
@@ -69,4 +74,15 @@ func FilterOne(query string, input func(in io.WriteCloser)) string {
 		return ""
 	}
 	return result[0]
+}
+
+// FilterMany interactively filters many items from a list
+func FilterMany(query string, input func(in io.WriteCloser)) []string {
+	opts := &fzfOptions{
+		query: query,
+		multi: true,
+	}
+	cmd := newFzfCmd(opts)
+	result := withFilter(cmd.String(), input)
+	return result
 }
