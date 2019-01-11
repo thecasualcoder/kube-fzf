@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/arunvelsriram/kube-fzf/pkg/k8s/resources"
 	homedir "github.com/mitchellh/go-homedir"
@@ -22,14 +23,12 @@ var rootCmd = &cobra.Command{
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println()
-		var podName string
+		var podNameQuery string
 		if len(args) == 1 {
-			podName = args[0]
+			podNameQuery = strings.TrimSpace(args[0])
 		}
-		fmt.Println(podName)
 
 		kubeconfig := viper.GetString("kubeconfig")
-		fmt.Println(kubeconfig)
 		config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
 		if err != nil {
 			panic(err.Error())
@@ -44,7 +43,10 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			panic(err.Error())
 		}
-		fmt.Println(pods)
+
+		filteredPod := pods.FilterOne(podNameQuery)
+
+		fmt.Println(filteredPod)
 	},
 }
 

@@ -1,6 +1,10 @@
 package resources
 
 import (
+	"fmt"
+	"io"
+
+	"github.com/arunvelsriram/kube-fzf/pkg/fzf"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
@@ -11,7 +15,29 @@ type Pod struct {
 }
 
 // Pods represents Pod collection
-type Pods []Pod
+type Pods []*Pod
+
+// Find finds a pod by name
+func (pods Pods) find(name string) *Pod {
+	for _, pod := range pods {
+		if pod.Name == name {
+			return pod
+		}
+	}
+
+	return nil
+}
+
+// FilterOne filters one pod by name
+func (pods Pods) FilterOne(nameQuery string) *Pod {
+	filteredPodName := fzf.FilterOne(nameQuery, func(in io.WriteCloser) {
+		for _, pod := range pods {
+			fmt.Fprintln(in, pod.Name)
+		}
+	})
+	filteredPod := pods.find(filteredPodName)
+	return filteredPod
+}
 
 // GetPods gets all pods from the given namespace
 func GetPods(clientset *kubernetes.Clientset, namespace string) (Pods, error) {
@@ -23,7 +49,7 @@ func GetPods(clientset *kubernetes.Clientset, namespace string) (Pods, error) {
 	podItems := podList.Items
 	pods := make(Pods, len(podItems))
 	for index, pod := range podItems {
-		pods[index] = Pod{
+		pods[index] = &Pod{
 			Name: pod.ObjectMeta.Name,
 		}
 	}
