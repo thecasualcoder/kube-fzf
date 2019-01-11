@@ -6,24 +6,49 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 )
 
 type fzfOptions struct {
-	query string
-	multi bool
+	query       string
+	multi       bool
+	height      int
+	ansi        bool
+	reverse     bool
+	selectIfOne bool
 }
 
 func (opts *fzfOptions) String() string {
 	var buffer bytes.Buffer
 	if opts.multi {
-		buffer.WriteString("-m ")
+		buffer.WriteString("--multi ")
+	}
+
+	if opts.ansi {
+		buffer.WriteString("--ansi ")
+	}
+
+	if opts.reverse {
+		buffer.WriteString("--reverse ")
+	}
+
+	if opts.selectIfOne {
+		buffer.WriteString("--select-1 ")
+	}
+
+	if opts.height >= 0 {
+		buffer.WriteString("--height ")
+		buffer.WriteString(strconv.Itoa(opts.height))
+		buffer.WriteString(" ")
 	}
 
 	if opts.query != "" {
-		buffer.WriteString("-q ")
+		buffer.WriteString("--query ")
 		buffer.WriteString(opts.query)
+		buffer.WriteString(" ")
 	}
+
 	return buffer.String()
 }
 
@@ -40,10 +65,17 @@ func (cmd *fzfCmd) String() string {
 	return buffer.String()
 }
 
-func newFzfCmd(opts *fzfOptions) *fzfCmd {
+func defaultfzfCmd() *fzfCmd {
 	return &fzfCmd{
 		name: "fzf",
-		opts: opts,
+		opts: &fzfOptions{
+			query:       "",
+			multi:       false,
+			height:      10,
+			ansi:        true,
+			reverse:     true,
+			selectIfOne: true,
+		},
 	}
 }
 
@@ -73,10 +105,9 @@ func inputFunc(items []string) func(io.WriteCloser) {
 
 // FilterOne interactively filters one item from a list
 func FilterOne(query string, items []string) string {
-	opts := &fzfOptions{
-		query: query,
-	}
-	cmd := newFzfCmd(opts)
+	cmd := defaultfzfCmd()
+	cmd.opts.query = query
+	fmt.Println(cmd)
 	result := withFilter(cmd.String(), inputFunc(items))
 
 	if len(result) == 0 {
@@ -87,11 +118,9 @@ func FilterOne(query string, items []string) string {
 
 // FilterMany interactively filters many items from a list
 func FilterMany(query string, items []string) []string {
-	opts := &fzfOptions{
-		query: query,
-		multi: true,
-	}
-	cmd := newFzfCmd(opts)
+	cmd := defaultfzfCmd()
+	cmd.opts.query = query
+	cmd.opts.multi = true
 	result := withFilter(cmd.String(), inputFunc(items))
 
 	return result

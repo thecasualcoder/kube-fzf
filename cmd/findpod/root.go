@@ -45,6 +45,8 @@ var rootCmd = &cobra.Command{
 			panic(err.Error())
 		}
 
+		filteredPods := fzf.FilterMany(podNameQuery, pods)
+		fmt.Println(filteredPods)
 		filteredPod := fzf.FilterOne(podNameQuery, pods)
 		fmt.Println(filteredPod)
 	},
