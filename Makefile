@@ -18,7 +18,10 @@ ensure-out-dir:
 	mkdir -p out
 
 modules: ## add missing and remove unused modules
-	go mod tidy
+	$(GOBIN) mod tidy -v
+
+upgrade-modules: ## upgrade all modules
+	$(GOBIN) get -u
 
 compile: ensure-out-dir ## compiles kube-tmuxp for this platform
 	$(GOBIN) build -ldflags "-X main.version=${BUILD}" -o  ./out/findpod ./findpod.go
