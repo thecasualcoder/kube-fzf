@@ -42,17 +42,17 @@ var rootCmd = &cobra.Command{
 			panic(err.Error())
 		}
 
-		pods, err := k8sapi.GetPods(clientset, "default")
+		pods, err := k8sapi.GetPods(clientset, namespaceName)
 		if err != nil {
 			panic(err.Error())
 		}
 
 		if multiSelect {
 			filteredPods := fzf.FilterMany(podNameQuery, pods)
-			kubectl.GetPods(kubeconfig, filteredPods)
+			kubectl.GetPods(kubeconfig, namespaceName, filteredPods)
 		} else {
 			filteredPod := fzf.FilterOne(podNameQuery, pods)
-			kubectl.GetPods(kubeconfig, []string{filteredPod})
+			kubectl.GetPods(kubeconfig, namespaceName, []string{filteredPod})
 		}
 	},
 }
@@ -81,7 +81,7 @@ func init() {
 	cobra.OnInitialize(initKubeconfig)
 	rootCmd.AddCommand(cmd.VersionCmd)
 	rootCmd.Flags().BoolVarP(&allNamespaces, "all-namespaces", "a", false, "consider all namespaces")
-	rootCmd.Flags().StringVarP(&namespaceName, "namespace", "n", "", "namespace pattern")
+	rootCmd.Flags().StringVarP(&namespaceName, "namespace", "n", "default", "namespace pattern")
 	rootCmd.Flags().BoolVarP(&multiSelect, "multi", "m", true, `find multiple pods
 use tab/shift+tab to select/de-select from the interactive list`)
 	rootCmd.Flags().StringP("kubeconfig", "", "", "path to kubeconfig file (default is $HOME/.kube/config)")
