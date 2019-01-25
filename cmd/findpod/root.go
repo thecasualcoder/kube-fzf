@@ -8,13 +8,11 @@ import (
 
 	"github.com/arunvelsriram/kube-fzf/cmd"
 	"github.com/arunvelsriram/kube-fzf/pkg/fzf"
-	"github.com/arunvelsriram/kube-fzf/pkg/k8sapi"
 	"github.com/arunvelsriram/kube-fzf/pkg/kubectl"
+	"github.com/arunvelsriram/kube-fzf/pkg/kubernetes"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/tools/clientcmd"
 )
 
 var allNamespaces bool
@@ -32,19 +30,16 @@ var rootCmd = &cobra.Command{
 		}
 
 		kubeconfig := viper.GetString("kubeconfig")
-		config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
-		if err != nil {
-			panic(err.Error())
-		}
 
-		clientset, err := kubernetes.NewForConfig(config)
+		client, err := kubernetes.NewClient(kubeconfig)
 		if err != nil {
-			panic(err.Error())
+			fmt.Println(err)
+			os.Exit(1)
 		}
-
-		pods, err := k8sapi.GetPods(clientset, namespaceName)
+		pods, err := client.GetPods(namespaceName)
 		if err != nil {
-			panic(err.Error())
+			fmt.Println(err)
+			os.Exit(1)
 		}
 
 		if multiSelect {
@@ -70,7 +65,8 @@ func initKubeconfig() {
 	if !viper.IsSet("kubeconfig") || viper.GetString("kubeconfig") == "" {
 		home, err := homedir.Dir()
 		if err != nil {
-			panic(err.Error())
+			fmt.Println(err)
+			os.Exit(1)
 		}
 
 		viper.SetDefault("kubeconfig", filepath.Join(home, ".kube", "config"))
