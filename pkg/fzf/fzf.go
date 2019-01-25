@@ -59,7 +59,9 @@ func withFilter(command string, input func(in io.WriteCloser)) []string {
 		in.Close()
 	}()
 	result, _ := cmd.Output()
-	return strings.Split(string(result), "\n")
+	filtered := strings.Split(string(result), "\n")
+	filtered = filtered[:len(filtered)-1]
+	return filtered
 }
 
 func inputFunc(items []string) func(io.WriteCloser) {
