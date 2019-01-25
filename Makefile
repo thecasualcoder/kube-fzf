@@ -4,6 +4,7 @@ help: ## prints help (only for tasks with comment)
 
 SRC_PACKAGES=$(shell go list ./...)
 BUILD?=$(shell git describe --tags --always --dirty)
+DEP:=$(shell command -v dep 2> /dev/null)
 RICHGO=$(shell command -v richgo 2> /dev/null)
 
 ifeq ($(RICHGO),)
@@ -17,11 +18,8 @@ all: setup build
 ensure-out-dir:
 	mkdir -p out
 
-modules: ## add missing and remove unused modules
-	$(GOBIN) mod tidy -v
-
-upgrade-modules: ## upgrade all modules
-	$(GOBIN) get -u
+build-deps: ## install deps
+	dep ensure -v
 
 compile: ensure-out-dir ## compiles kube-tmuxp for this platform
 	$(GOBIN) build -ldflags "-X main.version=${BUILD}" -o  ./out/findpod ./findpod.go
@@ -36,9 +34,12 @@ vet: ## examine go code for suspicious constructs
 	$(GOBIN) vet $(SRC_PACKAGES)
 
 setup: ## setup environment
+ifeq ($(DEP),)
+	curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+endif
+
 ifeq ($(RICHGO),)
 	$(GOBIN) get -u github.com/kyoh86/richgo
 endif
 
-build: fmt vet compile ## build the application
-
+build: build-deps fmt vet compile ## build the application

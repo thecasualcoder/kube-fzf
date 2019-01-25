@@ -1,0 +1,6 @@
+# Vim
+*.swp
+
+#Output
+out/
+dist/
