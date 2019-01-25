@@ -9,6 +9,7 @@ import (
 	"github.com/arunvelsriram/kube-fzf/cmd"
 	"github.com/arunvelsriram/kube-fzf/pkg/fzf"
 	"github.com/arunvelsriram/kube-fzf/pkg/k8sapi"
+	"github.com/arunvelsriram/kube-fzf/pkg/kubectl"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -48,10 +49,10 @@ var rootCmd = &cobra.Command{
 
 		if multiSelect {
 			filteredPods := fzf.FilterMany(podNameQuery, pods)
-			fmt.Println(filteredPods)
+			kubectl.GetPods(kubeconfig, filteredPods)
 		} else {
 			filteredPod := fzf.FilterOne(podNameQuery, pods)
-			fmt.Println(filteredPod)
+			kubectl.GetPods(kubeconfig, []string{filteredPod})
 		}
 	},
 }

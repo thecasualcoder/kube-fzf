@@ -52,3 +52,11 @@
 [prune]
   go-tests = true
   unused-packages = true
+
+[[override]]
+  name = "github.com/russross/blackfriday"
+  branch = "master"
+
+[[override]]
+  name = "k8s.io/kubernetes"
+  branch = "master"
