@@ -22,21 +22,9 @@ func (pods Pods) Names() []string {
 	return names
 }
 
-// FilterOne uses fzf to fileter one pod by given name
-func (pods Pods) FilterOne(name string) *Pod {
-	filteredPodName := fzf.FilterOne(name, pods.Names())
-	for _, pod := range pods {
-		if pod.Name == filteredPodName {
-			return &pod
-		}
-	}
-
-	return nil
-}
-
-// FilterMany uses fzf to filter multiple pods by given name
-func (pods Pods) FilterMany(name string) Pods {
-	filteredPodNames := fzf.FilterMany(name, pods.Names())
+// Filter uses fzf to filter one or more pods
+func (pods Pods) Filter(nameQuery string, multi bool) Pods {
+	filteredPodNames := fzf.Filter(nameQuery, multi, pods.Names())
 	filteredPods := make(Pods, len(filteredPodNames))
 	for i, filteredPodName := range filteredPodNames {
 		for _, pod := range pods {

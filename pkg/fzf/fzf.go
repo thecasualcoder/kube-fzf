@@ -72,26 +72,13 @@ func inputFunc(items []string) func(io.WriteCloser) {
 	}
 }
 
-// FilterOne interactively filters one item from a list
-func FilterOne(query string, items []string) string {
+// Filter interactively filters one or more items from a list
+func Filter(query string, multi bool, items []string) []string {
 	fzfCmd := defaultFzfCmd()
 	fzfCmd.OverrideOpt("--query", query)
-
-	result := withFilter(fzfCmd.String(), inputFunc(items))
-
-	if len(result) == 0 {
-		return ""
+	if multi {
+		fzfCmd.OverrideOpt("--multi", "true")
 	}
-	return result[0]
-}
 
-// FilterMany interactively filters many items from a list
-func FilterMany(query string, items []string) []string {
-	fzfCmd := defaultFzfCmd()
-	fzfCmd.OverrideOpt("--query", query)
-	fzfCmd.OverrideOpt("--multi", "true")
-
-	result := withFilter(fzfCmd.String(), inputFunc(items))
-
-	return result
+	return withFilter(fzfCmd.String(), inputFunc(items))
 }
