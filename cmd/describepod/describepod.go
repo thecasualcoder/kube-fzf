@@ -56,13 +56,16 @@ var rootCmd = &cobra.Command{
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			filteredNamespace := namespaces.Filter(namespaceName)
+			filteredNamespace, err := namespaces.FilterOne(namespaceName)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			pods, err := client.GetPods(filteredNamespace)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-
 			filteredPod, err := pods.FilterOne(podName, multiSelect)
 			if err != nil {
 				fmt.Println(err)
