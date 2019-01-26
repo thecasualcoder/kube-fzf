@@ -23,9 +23,11 @@ build-deps: ## install deps
 
 compile: ensure-out-dir ## compiles kube-tmuxp for this platform
 	$(GOBIN) build -ldflags "-X main.version=${BUILD}" -o  ./out/findpod ./findpod.go
+	$(GOBIN) build -ldflags "-X main.version=${BUILD}" -o  ./out/describepod ./describepod.go
 
 compile-linux: ensure-out-dir ## compiles kube-tmuxp for linux
 	GOOS=linux GOARCH=amd64 $(GOBIN) build -ldflags "-X main.version=${BUILD}" -o ./out/findpod ./findpod.go
+	$(GOBIN) build -ldflags "-X main.version=${BUILD}" -o  ./out/describepod ./describepod.go
 
 fmt: ## format go code
 	$(GOBIN) fmt $(SRC_PACKAGES)

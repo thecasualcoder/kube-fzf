@@ -1,6 +1,8 @@
 package kubernetes
 
 import (
+	"fmt"
+
 	"github.com/arunvelsriram/kube-fzf/pkg/fzf"
 )
 
@@ -36,6 +38,16 @@ func (pods Pods) Filter(nameQuery string, multi bool) Pods {
 	}
 
 	return filteredPods
+}
+
+// FilterOne uses fzf to filter a pod
+func (pods Pods) FilterOne(nameQuery string, multi bool) (Pod, error) {
+	result := pods.Filter(nameQuery, multi)
+	if len(result) == 0 {
+		return Pod{}, fmt.Errorf("Fzf returned an empty result")
+	}
+
+	return result[0], nil
 }
 
 // GroupByNamespace returns pods grouped by namespace
