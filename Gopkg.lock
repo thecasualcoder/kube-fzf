@@ -123,6 +123,14 @@
   revision = "d6023ce2651d8eafb5c75bb0c7167536102ec9f5"
 
 [[projects]]
+  digest = "1:bbc4aacabe6880bdbce849c64cb061b7eddf39f132af4ea2853ddd32f85fbec3"
+  name = "github.com/fatih/camelcase"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "44e46d280b43ec1531bb25252440e34f1b800b65"
+  version = "v1.0.0"
+
+[[projects]]
   digest = "1:abeb38ade3f32a92943e5be54f55ed6d6e3b6602761d74b4aab4c9dd45c18abd"
   name = "github.com/fsnotify/fsnotify"
   packages = ["."]
@@ -630,9 +638,10 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:6d0f59c53a23ca750571dc38d8779831172e2c0b1643c1cde0ee75a392f25544"
+  digest = "1:b02668aedf5ca2ceda42831460aa4ba6cbb476f67b3675a479b9551031fdf4e9"
   name = "k8s.io/apimachinery"
   packages = [
+    "pkg/api/equality",
     "pkg/api/errors",
     "pkg/api/meta",
     "pkg/api/resource",
@@ -814,7 +823,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:e20afe10efb4667407e65c59935496bb72eb1b5de852999a744e1db5e6651b28"
+  digest = "1:114ade619edb6bc3c7662777a6f9c42a37533a8630bc0d38f0ca8b77a9449540"
   name = "k8s.io/kubernetes"
   packages = [
     "pkg/api/legacyscheme",
@@ -881,14 +890,26 @@
     "pkg/apis/storage/v1alpha1",
     "pkg/apis/storage/v1beta1",
     "pkg/features",
+    "pkg/kubectl/cmd/describe",
     "pkg/kubectl/cmd/get",
     "pkg/kubectl/cmd/util",
     "pkg/kubectl/cmd/util/openapi",
     "pkg/kubectl/cmd/util/openapi/validation",
+    "pkg/kubectl/describe",
+    "pkg/kubectl/describe/versioned",
     "pkg/kubectl/generated",
     "pkg/kubectl/scheme",
+    "pkg/kubectl/util/certificate",
+    "pkg/kubectl/util/deployment",
+    "pkg/kubectl/util/event",
+    "pkg/kubectl/util/fieldpath",
     "pkg/kubectl/util/i18n",
     "pkg/kubectl/util/printers",
+    "pkg/kubectl/util/qos",
+    "pkg/kubectl/util/rbac",
+    "pkg/kubectl/util/resource",
+    "pkg/kubectl/util/slice",
+    "pkg/kubectl/util/storage",
     "pkg/kubectl/util/templates",
     "pkg/kubectl/util/term",
     "pkg/kubectl/validation",
@@ -944,6 +965,7 @@
     "k8s.io/client-go/kubernetes",
     "k8s.io/client-go/plugin/pkg/client/auth/gcp",
     "k8s.io/client-go/tools/clientcmd",
+    "k8s.io/kubernetes/pkg/kubectl/cmd/describe",
     "k8s.io/kubernetes/pkg/kubectl/cmd/get",
     "k8s.io/kubernetes/pkg/kubectl/cmd/util",
   ]
