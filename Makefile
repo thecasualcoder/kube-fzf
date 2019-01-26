@@ -21,13 +21,13 @@ ensure-out-dir:
 build-deps: ## install deps
 	dep ensure -v
 
-compile: ensure-out-dir ## compiles kube-tmuxp for this platform
-	$(GOBIN) build -ldflags "-X main.version=${BUILD}" -o  ./out/findpod ./findpod.go
-	$(GOBIN) build -ldflags "-X main.version=${BUILD}" -o  ./out/describepod ./describepod.go
+compile: ensure-out-dir ## compile for this platform
+	$(GOBIN) build -ldflags "-X main.version=${BUILD}" -o  ./out/findpod ./cmd/findpod
+	$(GOBIN) build -ldflags "-X main.version=${BUILD}" -o  ./out/describepod ./cmd/describepod
 
-compile-linux: ensure-out-dir ## compiles kube-tmuxp for linux
-	GOOS=linux GOARCH=amd64 $(GOBIN) build -ldflags "-X main.version=${BUILD}" -o ./out/findpod ./findpod.go
-	$(GOBIN) build -ldflags "-X main.version=${BUILD}" -o  ./out/describepod ./describepod.go
+compile-linux: ensure-out-dir ## compile for linux
+	GOOS=linux GOARCH=amd64 $(GOBIN) build -ldflags "-X main.version=${BUILD}" -o ./out/findpod ./cmd/findpod
+	GOOS=linux GOARCH=amd64 $(GOBIN) build -ldflags "-X main.version=${BUILD}" -o ./out/describepod ./cmd/describepod
 
 fmt: ## format go code
 	$(GOBIN) fmt $(SRC_PACKAGES)

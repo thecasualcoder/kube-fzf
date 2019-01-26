@@ -1,4 +1,4 @@
-package describepod
+package main
 
 import (
 	"fmt"
