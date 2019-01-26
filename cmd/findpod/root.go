@@ -46,7 +46,13 @@ var rootCmd = &cobra.Command{
 			filteredPods := pods.Filter(podName, multiSelect)
 			kubectl.GetPods(kubeconfig, filteredPods)
 		} else {
-			pods, err := client.GetPods(namespaceName)
+			namespaces, err := client.GetNamespaces()
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			filteredNamespace := namespaces.Filter(namespaceName)
+			pods, err := client.GetPods(filteredNamespace)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
