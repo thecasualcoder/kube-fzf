@@ -19,13 +19,13 @@ var namespaceName string
 var multiSelect bool
 
 var rootCmd = &cobra.Command{
-	Use:   "findpod [pod-name-query]",
+	Use:   "findpod [pod-query]",
 	Short: "Find pod/pods interactively",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		var podNameQuery string
+		var podName string
 		if len(args) == 1 {
-			podNameQuery = strings.TrimSpace(args[0])
+			podName = strings.TrimSpace(args[0])
 		}
 
 		kubeconfig := viper.GetString("kubeconfig")
@@ -43,7 +43,7 @@ var rootCmd = &cobra.Command{
 				os.Exit(1)
 			}
 
-			filteredPods := pods.FilterMany(podNameQuery)
+			filteredPods := pods.FilterMany(podName)
 			kubectl.GetPods(kubeconfig, filteredPods)
 		} else {
 			pods, err := client.GetPods(namespaceName)
@@ -52,7 +52,7 @@ var rootCmd = &cobra.Command{
 				os.Exit(1)
 			}
 
-			filteredPod := pods.FilterOne(podNameQuery)
+			filteredPod := pods.FilterOne(podName)
 			kubectl.GetPods(kubeconfig, kubernetes.Pods([]kubernetes.Pod{*filteredPod}))
 		}
 	},
@@ -83,7 +83,7 @@ func init() {
 	cobra.OnInitialize(initKubeconfig)
 	rootCmd.AddCommand(cmd.VersionCmd)
 	rootCmd.Flags().BoolVarP(&allNamespaces, "all-namespaces", "a", false, "consider all namespaces")
-	rootCmd.Flags().StringVarP(&namespaceName, "namespace", "n", "default", "namespace pattern")
+	rootCmd.Flags().StringVarP(&namespaceName, "namespace", "n", "default", "namespace query")
 	rootCmd.Flags().BoolVarP(&multiSelect, "multi", "m", true, `find multiple pods
 use tab/shift+tab to select/de-select from the interactive list`)
 	rootCmd.Flags().StringP("kubeconfig", "", "", "path to kubeconfig file (default is $HOME/.kube/config)")

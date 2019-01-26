@@ -13,14 +13,14 @@ type Client struct {
 
 // GetPods get all pods from the given namespace
 func (c *Client) GetPods(namespace string) (Pods, error) {
-	podList, err := c.clientset.CoreV1().Pods(namespace).List(metav1.ListOptions{})
+	list, err := c.clientset.CoreV1().Pods(namespace).List(metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
 
-	podItems := podList.Items
-	pods := make(Pods, len(podItems))
-	for index, pod := range podItems {
+	items := list.Items
+	pods := make(Pods, len(items))
+	for index, pod := range items {
 		objectMeta := pod.ObjectMeta
 		pods[index] = Pod{
 			Name:      objectMeta.Name,
