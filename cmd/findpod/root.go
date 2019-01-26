@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/arunvelsriram/kube-fzf/cmd"
-	"github.com/arunvelsriram/kube-fzf/pkg/fzf"
 	"github.com/arunvelsriram/kube-fzf/pkg/kubectl"
 	"github.com/arunvelsriram/kube-fzf/pkg/kubernetes"
 	homedir "github.com/mitchellh/go-homedir"
@@ -36,18 +35,25 @@ var rootCmd = &cobra.Command{
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		pods, err := client.GetPods(namespaceName)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
 
 		if multiSelect {
-			filteredPods := fzf.FilterMany(podNameQuery, pods)
-			kubectl.GetPods(kubeconfig, namespaceName, filteredPods)
+			pods, err := client.GetPods(namespaceName)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			filteredPods := pods.FilterMany(podNameQuery)
+			kubectl.GetPods(kubeconfig, filteredPods)
 		} else {
-			filteredPod := fzf.FilterOne(podNameQuery, pods)
-			kubectl.GetPods(kubeconfig, namespaceName, []string{filteredPod})
+			pods, err := client.GetPods(namespaceName)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			filteredPod := pods.FilterOne(podNameQuery)
+			kubectl.GetPods(kubeconfig, kubernetes.Pods([]kubernetes.Pod{*filteredPod}))
 		}
 	},
 }
