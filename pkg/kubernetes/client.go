@@ -33,22 +33,12 @@ func (c *Client) GetPods(namespace string) (Pods, error) {
 
 // GetAllPods get pod from all the namespaces
 func (c *Client) GetAllPods() (Pods, error) {
-	namespaces, err := c.GetNamespaces()
+	pods, err := c.GetPods("")
 	if err != nil {
 		return nil, err
 	}
 
-	var result Pods
-	for _, namespace := range namespaces {
-		pods, err := c.GetPods(namespace)
-		if err != nil {
-			return nil, err
-		}
-
-		result = append(result, pods...)
-	}
-
-	return result, nil
+	return pods, nil
 }
 
 // GetNamespaces gets all the namspaces
