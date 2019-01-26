@@ -36,24 +36,40 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		if multiSelect {
-			pods, err := client.GetPods(namespaceName)
+		if allNamespaces {
+			pods, err := client.GetAllPods()
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			filteredPods := pods.FilterMany(podName)
-			kubectl.GetPods(kubeconfig, filteredPods)
+			if multiSelect {
+				filteredPods := pods.FilterMany(podName)
+				kubectl.GetPods(kubeconfig, filteredPods)
+			} else {
+				filteredPod := pods.FilterOne(podName)
+				kubectl.GetPods(kubeconfig, kubernetes.Pods([]kubernetes.Pod{*filteredPod}))
+			}
 		} else {
-			pods, err := client.GetPods(namespaceName)
-			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
-			}
+			if multiSelect {
+				pods, err := client.GetPods(namespaceName)
+				if err != nil {
+					fmt.Println(err)
+					os.Exit(1)
+				}
 
-			filteredPod := pods.FilterOne(podName)
-			kubectl.GetPods(kubeconfig, kubernetes.Pods([]kubernetes.Pod{*filteredPod}))
+				filteredPods := pods.FilterMany(podName)
+				kubectl.GetPods(kubeconfig, filteredPods)
+			} else {
+				pods, err := client.GetPods(namespaceName)
+				if err != nil {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+
+				filteredPod := pods.FilterOne(podName)
+				kubectl.GetPods(kubeconfig, kubernetes.Pods([]kubernetes.Pod{*filteredPod}))
+			}
 		}
 	},
 }
