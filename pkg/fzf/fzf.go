@@ -13,9 +13,9 @@ import (
 func defaultFzfCmd() *cmd.Cmd {
 	defaultFzfOpts := cmd.Opts([]cmd.Opt{
 		{
-			Type:  "bool",
+			Type:  "string",
 			Flag:  "--height",
-			Value: "10",
+			Value: "12",
 		},
 		{
 			Type:  "bool",
@@ -25,6 +25,11 @@ func defaultFzfCmd() *cmd.Cmd {
 		{
 			Type:  "bool",
 			Flag:  "--select-1",
+			Value: "true",
+		},
+		{
+			Type:  "bool",
+			Flag:  "--reverse",
 			Value: "true",
 		},
 		{
