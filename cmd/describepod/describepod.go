@@ -3,13 +3,11 @@ package main
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/arunvelsriram/kube-fzf/cmd"
 	"github.com/arunvelsriram/kube-fzf/pkg/kubectl"
 	"github.com/arunvelsriram/kube-fzf/pkg/kubernetes"
-	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -85,20 +83,8 @@ func Execute() {
 	}
 }
 
-func initKubeconfig() {
-	if !viper.IsSet("kubeconfig") || viper.GetString("kubeconfig") == "" {
-		home, err := homedir.Dir()
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-
-		viper.SetDefault("kubeconfig", filepath.Join(home, ".kube", "config"))
-	}
-}
-
 func init() {
-	cobra.OnInitialize(initKubeconfig)
+	cobra.OnInitialize(cmd.InitKubeconfig)
 	rootCmd.AddCommand(cmd.VersionCmd)
 	rootCmd.Flags().BoolVarP(&allNamespaces, "all-namespaces", "a", false, "consider all namespaces")
 	rootCmd.Flags().StringVarP(&namespaceName, "namespace", "n", "default", "namespace query")
