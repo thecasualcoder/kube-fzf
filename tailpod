@@ -18,8 +18,9 @@ tailpod() {
     | tr ' ' '\n' \
     | fzf $(echo $fzf_args))
 
-  _kube_fzf_echo "kubectl logs --namespace='$namespace' --follow $pod_name -c $container_name"
-  kubectl logs --namespace=$namespace --follow $pod_name -c $container_name
+  CMD="kubectl logs --namespace='$namespace' --follow $pod_name -c $container_name --tail=200"
+  _kube_fzf_echo $CMD
+  echo $CMD | sh
   return $(_kube_fzf_teardown 0)
 }
 
