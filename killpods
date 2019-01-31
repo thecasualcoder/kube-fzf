@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+kubectl get pods --all-namespaces -o wide --no-headers | fzf -m | awk '{print "kubectl -n " $1 " delete pod " $2 " --grace-period=0 --force"}' | sh
