@@ -60,7 +60,7 @@ func GetPods(kubeconfig string, pods kubernetes.Pods) {
 
 // DescribePod describes a pod in the kubernetes cluster
 func DescribePod(kubeconfig string, pod kubernetes.Pod) {
-	cmd := newCmd(describeCmd, kubeconfig, pod.Namespace, flags{"": ""})
+	cmd := newCmd(describeCmd, kubeconfig, pod.Namespace, flags{})
 	args := []string{"pod", pod.Name}
 	cmd.Run(cmd, args)
 }

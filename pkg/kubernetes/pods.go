@@ -2,6 +2,7 @@ package kubernetes
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/arunvelsriram/kube-fzf/pkg/fzf"
 )
@@ -26,7 +27,11 @@ func (pods Pods) Names() []string {
 
 // Filter uses fzf to filter one or more pods
 func (pods Pods) Filter(nameQuery string, multi bool) Pods {
-	filteredPodNames := fzf.Filter(nameQuery, multi, pods.Names())
+	filteredPodNames := fzf.Filter(nameQuery, multi, func(in io.WriteCloser) {
+		for _, pod := range pods {
+			_, _ = fmt.Fprintln(in, pod.Name)
+		}
+	})
 	filteredPods := make(Pods, len(filteredPodNames))
 	for i, filteredPodName := range filteredPodNames {
 		for _, pod := range pods {
