@@ -46,8 +46,8 @@ func (pods Pods) Filter(nameQuery string, multi bool) Pods {
 }
 
 // FilterOne uses fzf to filter a pod
-func (pods Pods) FilterOne(nameQuery string, multi bool) (Pod, error) {
-	result := pods.Filter(nameQuery, multi)
+func (pods Pods) FilterOne(nameQuery string) (Pod, error) {
+	result := pods.Filter(nameQuery, false)
 	if len(result) == 0 {
 		return Pod{}, fmt.Errorf("Fzf returned an empty result")
 	}

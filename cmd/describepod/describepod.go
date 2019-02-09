@@ -15,8 +15,6 @@ import (
 var allNamespaces bool
 var namespaceName string
 
-const multiSelect = false
-
 var rootCmd = &cobra.Command{
 	Use:   "describepod [pod-query]",
 	Short: "Describe a pod interactively",
@@ -42,7 +40,7 @@ var rootCmd = &cobra.Command{
 				os.Exit(1)
 			}
 
-			filteredPod, err := pods.FilterOne(podName, multiSelect)
+			filteredPod, err := pods.FilterOne(podName)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
@@ -64,7 +62,7 @@ var rootCmd = &cobra.Command{
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			filteredPod, err := pods.FilterOne(podName, multiSelect)
+			filteredPod, err := pods.FilterOne(podName)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
