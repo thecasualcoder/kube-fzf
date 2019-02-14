@@ -6,5 +6,5 @@
 
 If you looking for any work:
 
-- [kube-fzf board](https://github.com/arunvelsriram/kube-fzf/projects/1)
-- [kube-fzf issues](https://github.com/arunvelsriram/kube-fzf/issues)
+- [kube-fzf board](https://github.com/thecasualcoder/kube-fzf/projects/1)
+- [kube-fzf issues](https://github.com/thecasualcoder/kube-fzf/issues)

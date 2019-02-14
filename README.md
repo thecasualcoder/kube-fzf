@@ -17,14 +17,14 @@ Shell commands using [`kubectl`](https://kubernetes.io/docs/reference/kubectl/ov
 ### Using Homebrew
 
 ```
-brew tap arunvelsriram/stable
+brew tap thecasualcoder/stable
 brew install kube-fzf
 ```
 
 ### Manual
 
 ```
-git clone https://github.com/arunvelsriram/kube-fzf.git ~/.kube-fzf
+git clone https://github.com/thecasualcoder/kube-fzf.git ~/.kube-fzf
 sudo ln -s ~/.kube-fzf/findpod /usr/local/bin/findpod
 sudo ln -s ~/.kube-fzf/execpod /usr/local/bin/execpod
 sudo ln -s ~/.kube-fzf/tailpod /usr/local/bin/tailpod
