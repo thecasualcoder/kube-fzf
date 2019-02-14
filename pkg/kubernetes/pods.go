@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/arunvelsriram/kube-fzf/pkg/fzf"
+	"github.com/thecasualcoder/kube-fzf/pkg/fzf"
 )
 
 // Pod represents a pod

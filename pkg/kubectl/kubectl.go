@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/arunvelsriram/kube-fzf/pkg/kubernetes"
+	"github.com/thecasualcoder/kube-fzf/pkg/kubernetes"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 	"k8s.io/kubernetes/pkg/kubectl/cmd/describe"
 	"k8s.io/kubernetes/pkg/kubectl/cmd/get"

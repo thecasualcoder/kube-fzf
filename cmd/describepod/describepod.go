@@ -5,11 +5,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/arunvelsriram/kube-fzf/cmd"
-	"github.com/arunvelsriram/kube-fzf/pkg/kubectl"
-	"github.com/arunvelsriram/kube-fzf/pkg/kubernetes"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/thecasualcoder/kube-fzf/cmd"
+	"github.com/thecasualcoder/kube-fzf/pkg/kubectl"
+	"github.com/thecasualcoder/kube-fzf/pkg/kubernetes"
 )
 
 var allNamespaces bool
