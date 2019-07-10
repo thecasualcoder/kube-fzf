@@ -13,6 +13,9 @@ _kube_fzf_usage() {
     execpod)
       echo -e "execpod [-a | -n <namespace-query>] [pod-query] <command>\n"
       ;;
+    pfpod)
+      echo -e "pfpod [-a | -n <namespace-query>] [pod-query] <port>\n"
+      ;;
     describepod)
       echo -e "describepod [-a | -n <namespace-query>] [pod-query]\n"
       ;;
@@ -58,15 +61,20 @@ _kube_fzf_handler() {
   done
 
   shift $((OPTIND - 1))
-
-  if [ "$func" = "execpod" ]; then
+  if [ "$func" = "execpod" ] || [ "$func" = "pfpod" ]; then
     if [ $# -eq 1 ]; then
       cmd=$1
       [ -z "$cmd" ] && cmd="sh"
     elif [ $# -eq 2 ]; then
       pod_query=$1
       cmd=$2
-      [ -z "$cmd" ] && echo "Command required." && _kube_fzf_usage "$func" && return 1
+      if [ -z "$cmd" ]; then
+        if [ "$func" = "execpod" ]; then
+          echo "Command required." && _kube_fzf_usage "$func" && return 1
+        elif [ "$func" = "pfpod" ]; then
+          echo "Port required." && _kube_fzf_usage "$func" && return 1
+        fi
+      fi
     else
       [ -z "$cmd" ] && cmd="sh"
     fi
