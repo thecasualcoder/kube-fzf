@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source kube-fzf.sh
+source ./kube-fzf.sh
 
 execpod() {
   local namespace_query pod_query cmd result namespace pod_name

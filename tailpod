@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source kube-fzf.sh
+source ./kube-fzf.sh
 
 tailpod() {
   local namespace_query pod_query result namespace pod_name
