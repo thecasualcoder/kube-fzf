@@ -76,7 +76,13 @@ _kube_fzf_handler() {
         fi
       fi
     else
-      [ -z "$cmd" ] && cmd="sh"
+      if [ -z "$cmd" ]; then
+        if [ "$func" = "execpod" ]; then
+          cmd="sh"
+        elif [ "$func" = "pfpod" ]; then
+          echo "Port required." && _kube_fzf_usage "$func" && return 1
+        fi
+      fi
     fi
   else
     pod_query=$1
