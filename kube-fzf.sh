@@ -30,12 +30,13 @@ EOF
 
 _kube_fzf_handler() {
   local opt namespace_query pod_query cmd
+  open=false
   local OPTIND=1
   local func=$1
 
   shift $((OPTIND))
 
-  while getopts ":hn:a" opt; do
+  while getopts ":hn:ao" opt; do
     case $opt in
       h)
         _kube_fzf_usage "$func"
@@ -46,6 +47,9 @@ _kube_fzf_handler() {
         ;;
       a)
         namespace_query="--all-namespaces"
+        ;;
+      o)
+        open=true
         ;;
       \?)
         echo "Invalid Option: -$OPTARG."
