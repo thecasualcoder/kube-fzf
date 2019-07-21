@@ -5,28 +5,57 @@ _kube_fzf_usage() {
   echo -e "\nUSAGE:\n"
   case $func in
     findpod)
-      echo -e "findpod [-a | -n <namespace-query>] [pod-query]\n"
-      ;;
-    tailpod)
-      echo -e "tailpod [-a | -n <namespace-query>] [pod-query]\n"
-      ;;
-    execpod)
-      echo -e "execpod [-a | -n <namespace-query>] [pod-query] <command>\n"
-      ;;
-    pfpod)
-      echo -e "pfpod [ -o | -a | -n <namespace-query>] [pod-query] <port>\n"
-      echo "-o                    -  Open in Browser after port-forwarding"
-      ;;
-    describepod)
-      echo -e "describepod [-a | -n <namespace-query>] [pod-query]\n"
-      ;;
-  esac
-  cat << EOF
+      cat << EOF
+findpod [-a | -n <namespace-query>] [pod-query]
+
 -a                    -  Search in all namespaces
+-h                    -  Show help
 -n <namespace-query>  -  Find namespaces matching <namespace-query> and do fzf.
                          If there is only one match then it is selected automatically.
--h                    -  Show help
 EOF
+      ;;
+    tailpod)
+      cat << EOF
+tailpod [-a | -n <namespace-query>] [pod-query]
+
+-a                    -  Search in all namespaces
+-h                    -  Show help
+-n <namespace-query>  -  Find namespaces matching <namespace-query> and do fzf.
+                         If there is only one match then it is selected automatically.
+EOF
+      ;;
+    execpod)
+      cat << EOF
+execpod [-a | -n <namespace-query>] [pod-query] <command>
+
+-a                    -  Search in all namespaces
+-h                    -  Show help
+-n <namespace-query>  -  Find namespaces matching <namespace-query> and do fzf.
+                         If there is only one match then it is selected automatically.
+EOF
+      ;;
+    pfpod)
+      cat << EOF
+pfpod [ -o | -a | -n <namespace-query>] [pod-query] <source-port:destination-port | port>
+
+-a                    -  Search in all namespaces
+-h                    -  Show help
+-n <namespace-query>  -  Find namespaces matching <namespace-query> and do fzf.
+                         If there is only one match then it is selected automatically.
+-o                    -  Open in Browser after port-forwarding
+EOF
+      ;;
+    describepod)
+      cat << EOF
+describepod [-a | -n <namespace-query>] [pod-query]
+
+-a                    -  Search in all namespaces
+-h                    -  Show help
+-n <namespace-query>  -  Find namespaces matching <namespace-query> and do fzf.
+                         If there is only one match then it is selected automatically.
+EOF
+      ;;
+  esac
 }
 
 _kube_fzf_handler() {
