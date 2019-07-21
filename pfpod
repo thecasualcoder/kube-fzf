@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 
+set -e
+set -o pipefail
+
 source kube-fzf.sh
 
 pfpod() {
   local namespace_query pod_query port result namespace pod_name open
 
-  _kube_fzf_handler "pfpod" "$@" || return $(_kube_fzf_teardown 1)
+  _kube_fzf_handler "pfpod" "$@"
   IFS=$'|' read -r namespace_query pod_query port open <<< "$args"
 
   result=$(_kube_fzf_search_pod "$namespace_query" "$pod_query")
-  [ $? -ne 0 ] && echo "$result" && return $(_kube_fzf_teardown 1)
   IFS=$'|' read -r namespace pod_name <<< "$result"
 
   local fzf_args=$(_kube_fzf_fzf_args "" "--select-1")
@@ -17,7 +19,6 @@ pfpod() {
   _kube_fzf_echo "kubectl port-forward --namespace='$namespace' $pod_name $port"
   $open && open_in_browser $port
   kubectl port-forward --namespace=$namespace $pod_name $port
-  return $(_kube_fzf_teardown 0)
 }
 
 open_in_browser() {

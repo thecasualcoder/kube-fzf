@@ -1,21 +1,22 @@
 #!/usr/bin/env bash
 
-source kube-fzf.sh
+set -e
+set -o pipefail
+
+source ./kube-fzf.sh
 
 describepod() {
   local namespace_query pod_query result namespace pod_name
 
-  _kube_fzf_handler "describepod" "$@" || return $(_kube_fzf_teardown 1)
+  _kube_fzf_handler "describepod" "$@"
   namespace_query=$(echo $args | awk -F '|' '{ print $1 }')
   pod_query=$(echo $args | awk -F '|' '{ print $2 }')
 
   result=$(_kube_fzf_search_pod "$namespace_query" "$pod_query")
-  [ $? -ne 0 ] && echo "$result" && return $(_kube_fzf_teardown 1)
   IFS=$'|' read -r namespace pod_name <<< "$result"
 
   _kube_fzf_echo "kubectl describe pod $pod_name --namespace='$namespace'"
   kubectl describe pod $pod_name --namespace=$namespace
-  return $(_kube_fzf_teardown 0)
 }
 
 describepod "$@"

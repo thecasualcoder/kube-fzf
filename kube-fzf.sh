@@ -164,7 +164,7 @@ _kube_fzf_search_pod() {
       | awk '{ print $1 }')
   fi
 
-  [ -z "$pod_name" ] && echo "No pods found, namespace: $namespace" && return 1
+  [ -z "$pod_name" ] && return 1
 
   echo "$namespace|$pod_name"
 }
@@ -176,7 +176,3 @@ _kube_fzf_echo() {
   echo -e "\n$bold_green $message $reset_color\n"
 }
 
-_kube_fzf_teardown() {
-  unset args
-  echo $1
-}

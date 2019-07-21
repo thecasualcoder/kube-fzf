@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 
+set -e
+set -o pipefail
+
 source kube-fzf.sh
 
 execpod() {
   local namespace_query pod_query cmd result namespace pod_name
 
-  _kube_fzf_handler "execpod" "$@" || return $(_kube_fzf_teardown 1)
+  _kube_fzf_handler "execpod" "$@"
   IFS=$'|' read -r namespace_query pod_query cmd _unused <<< "$args"
 
   result=$(_kube_fzf_search_pod "$namespace_query" "$pod_query")
-  [ $? -ne 0 ] && echo "$result" && return $(_kube_fzf_teardown 1)
   IFS=$'|' read -r namespace pod_name <<< "$result"
 
   local fzf_args=$(_kube_fzf_fzf_args "" "--select-1")
@@ -19,7 +21,6 @@ execpod() {
 
   _kube_fzf_echo "kubectl exec --namespace='$namespace' $pod_name -c $container_name -it $cmd"
   kubectl exec --namespace=$namespace $pod_name -c $container_name -it $cmd
-  return $(_kube_fzf_teardown 0)
 }
 
 execpod "$@"
