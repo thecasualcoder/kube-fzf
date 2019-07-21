@@ -6,7 +6,7 @@ execpod() {
   local namespace_query pod_query cmd result namespace pod_name
 
   _kube_fzf_handler "execpod" "$@" || return $(_kube_fzf_teardown 1)
-  IFS=$'|' read -r namespace_query pod_query cmd <<< "$args"
+  IFS=$'|' read -r namespace_query pod_query cmd _unused <<< "$args"
 
   result=$(_kube_fzf_search_pod "$namespace_query" "$pod_query")
   [ $? -ne 0 ] && echo "$result" && return $(_kube_fzf_teardown 1)

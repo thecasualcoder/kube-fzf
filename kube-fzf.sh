@@ -14,7 +14,8 @@ _kube_fzf_usage() {
       echo -e "execpod [-a | -n <namespace-query>] [pod-query] <command>\n"
       ;;
     pfpod)
-      echo -e "pfpod [-a | -n <namespace-query>] [pod-query] <port>\n"
+      echo -e "pfpod [ -o | -a | -n <namespace-query>] [pod-query] <port>\n"
+      echo "-o                    -  Open in Browser after port-forwarding"
       ;;
     describepod)
       echo -e "describepod [-a | -n <namespace-query>] [pod-query]\n"
@@ -30,12 +31,13 @@ EOF
 
 _kube_fzf_handler() {
   local opt namespace_query pod_query cmd
+  local open=false
   local OPTIND=1
   local func=$1
 
   shift $((OPTIND))
 
-  while getopts ":hn:a" opt; do
+  while getopts ":hn:ao" opt; do
     case $opt in
       h)
         _kube_fzf_usage "$func"
@@ -46,6 +48,9 @@ _kube_fzf_handler() {
         ;;
       a)
         namespace_query="--all-namespaces"
+        ;;
+      o)
+        open=true
         ;;
       \?)
         echo "Invalid Option: -$OPTARG."
@@ -76,13 +81,19 @@ _kube_fzf_handler() {
         fi
       fi
     else
-      [ -z "$cmd" ] && cmd="sh"
+      if [ -z "$cmd" ]; then
+        if [ "$func" = "execpod" ]; then
+          cmd="sh"
+        elif [ "$func" = "pfpod" ]; then
+          echo "Port required." && _kube_fzf_usage "$func" && return 1
+        fi
+      fi
     fi
   else
     pod_query=$1
   fi
 
-  args="$namespace_query|$pod_query|$cmd"
+  args="$namespace_query|$pod_query|$cmd|$open"
 }
 
 _kube_fzf_fzf_args() {
