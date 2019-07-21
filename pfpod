@@ -3,10 +3,10 @@
 source ./kube-fzf.sh
 
 pfpod() {
-  local namespace_query pod_query port result namespace pod_name
+  local namespace_query pod_query port result namespace pod_name open
 
   _kube_fzf_handler "pfpod" "$@" || return $(_kube_fzf_teardown 1)
-  IFS=$'|' read -r namespace_query pod_query port <<< "$args"
+  IFS=$'|' read -r namespace_query pod_query port open <<< "$args"
 
   result=$(_kube_fzf_search_pod "$namespace_query" "$pod_query")
   [ $? -ne 0 ] && echo "$result" && return $(_kube_fzf_teardown 1)
@@ -22,7 +22,7 @@ pfpod() {
 
 open_in_browser() {
   IFS=':' read -ra splitted_port <<< "$1"
-  (sleep 3 && echo "Opening in localhost:${splitted_port}" && open "http://localhost:${splitted_port}") &
+  (sleep 3 && echo "Opening localhost:${splitted_port}" && open "http://localhost:${splitted_port}") &
 }
 
 pfpod "$@"

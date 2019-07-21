@@ -30,7 +30,7 @@ EOF
 
 _kube_fzf_handler() {
   local opt namespace_query pod_query cmd
-  open=false
+  local open=false
   local OPTIND=1
   local func=$1
 
@@ -92,7 +92,7 @@ _kube_fzf_handler() {
     pod_query=$1
   fi
 
-  args="$namespace_query|$pod_query|$cmd"
+  args="$namespace_query|$pod_query|$cmd|$open"
 }
 
 _kube_fzf_fzf_args() {
