@@ -14,7 +14,8 @@ _kube_fzf_usage() {
       echo -e "execpod [-a | -n <namespace-query>] [pod-query] <command>\n"
       ;;
     pfpod)
-      echo -e "pfpod [-a | -n <namespace-query>] [pod-query] <port>\n"
+      echo -e "pfpod [ -o | -a | -n <namespace-query>] [pod-query] <port>\n"
+      echo "-o                    -  Open in Browser after port-forwarding"
       ;;
     describepod)
       echo -e "describepod [-a | -n <namespace-query>] [pod-query]\n"
