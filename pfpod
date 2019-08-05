@@ -18,14 +18,14 @@ pfpod() {
 
   _kube_fzf_echo "kubectl port-forward --namespace='$namespace' $pod_name $port"
   IFS=':' read -ra splitted_port <<< $port
+  copier=$noop
   command -v xclip >/dev/null 2>&1 && {
-    echo "Copied to clipboard using xclip"
-    echo "http://localhost:$splitted_port" | xclip
+    copier=xclip
   }
   command -v pbcopy >/dev/null 2>&1 && {
-    echo "Copied to clipboard using pbcopy"
-    echo "http://localhost:$splitted_port" | pbcopy
+    copier=pbcopy
   }
+  echo "http://localhost:$splitted_port" | $copier
   $open && open_in_browser $splitted_port
   kubectl port-forward --namespace=$namespace $pod_name $port
 }
