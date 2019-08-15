@@ -11,6 +11,7 @@ Shell commands using [`kubectl`](https://kubernetes.io/docs/reference/kubectl/ov
 ## Prerequisite
 
 * [`fzf`](https://github.com/junegunn/fzf)
+* [`xclip`](https://linux.die.net/man/1/xclip) Only for Linux and it is optional
 
 ## Install
 
