@@ -63,7 +63,7 @@ execpod [-a | -n <namespace-query>] [pod-query] <command>
 ### `pfpod`
 
 ```
-pfpod [-o | -a | -n <namespace-query>] [pod-query] <port>
+pfpod [-c | -o | -a | -n <namespace-query>] [pod-query] <port>
 ```
 
 #### Options
