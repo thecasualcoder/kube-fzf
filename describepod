@@ -3,7 +3,7 @@
 set -e
 set -o pipefail
 
-source ./kube-fzf.sh
+source kube-fzf.sh
 
 describepod() {
   local namespace_query pod_query result namespace pod_name
