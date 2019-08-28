@@ -36,13 +36,14 @@ EOF
       ;;
     pfpod)
       cat << EOF
-pfpod [ -o | -a | -n <namespace-query>] [pod-query] <source-port:destination-port | port>
+pfpod [ -c | -o | -a | -n <namespace-query>] [pod-query] <source-port:destination-port | port>
 
 -a                    -  Search in all namespaces
 -h                    -  Show help
 -n <namespace-query>  -  Find namespaces matching <namespace-query> and do fzf.
                          If there is only one match then it is selected automatically.
 -o                    -  Open in Browser after port-forwarding
+-c                    -  Copy to Clipboard
 EOF
       ;;
     describepod)
@@ -61,12 +62,13 @@ EOF
 _kube_fzf_handler() {
   local opt namespace_query pod_query cmd
   local open=false
+  local copy=false
   local OPTIND=1
   local func=$1
 
   shift $((OPTIND))
 
-  while getopts ":hn:ao" opt; do
+  while getopts ":hn:aoc" opt; do
     case $opt in
       h)
         _kube_fzf_usage "$func"
@@ -80,6 +82,9 @@ _kube_fzf_handler() {
         ;;
       o)
         open=true
+        ;;
+      c)
+        copy=true
         ;;
       \?)
         echo "Invalid Option: -$OPTARG."
@@ -122,7 +127,7 @@ _kube_fzf_handler() {
     pod_query=$1
   fi
 
-  args="$namespace_query|$pod_query|$cmd|$open"
+  args="$namespace_query|$pod_query|$cmd|$open|$copy"
 }
 
 _kube_fzf_fzf_args() {
