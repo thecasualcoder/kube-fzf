@@ -3,8 +3,14 @@
 set -e
 set -o pipefail
 
-source kube-fzf.sh
-
+load_kube_fzf(){
+  if [ ${PWD##*/} == "kube-fzf" ]
+  then
+    source ./kube-fzf.sh
+  else
+    source kube-fzf.sh
+  fi
+}
 execpod() {
   local namespace_query pod_query cmd result namespace pod_name
 
@@ -23,4 +29,5 @@ execpod() {
   kubectl exec --namespace=$namespace $pod_name -c $container_name -it $cmd
 }
 
+load_kube_fzf
 execpod "$@"
