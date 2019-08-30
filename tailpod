@@ -3,14 +3,8 @@
 set -e
 set -o pipefail
 
-load_kube_fzf(){
-  if [ ${PWD##*/} == "kube-fzf" ]
-  then
-    source ./kube-fzf.sh
-  else
-    source kube-fzf.sh
-  fi
-}
+source fzf-utils.sh
+
 tailpod() {
   local namespace_query pod_query result namespace pod_name
 
@@ -30,5 +24,4 @@ tailpod() {
   kubectl logs --namespace=$namespace --follow $pod_name -c $container_name
 }
 
-load_kube_fzf
 tailpod "$@"

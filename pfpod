@@ -3,14 +3,7 @@
 set -e
 set -o pipefail
 
-load_kube_fzf(){
-  if [ ${PWD##*/} == "kube-fzf" ]
-  then
-    source ./kube-fzf.sh
-  else
-    source kube-fzf.sh
-  fi
-}
+source fzf-utils.sh
 
 pfpod() {
   local namespace_query pod_query port result namespace pod_name open copy
@@ -44,5 +37,4 @@ copy_to_clipboard() {
   }
   echo "http://localhost:$1" | $copier
 }
-load_kube_fzf
 pfpod "$@"

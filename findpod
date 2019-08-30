@@ -2,14 +2,8 @@
 
 set -e
 set -o pipefail
-load_kube_fzf(){
-  if [ ${PWD##*/} == "kube-fzf" ]
-  then
-    source ./kube-fzf.sh
-  else
-    source kube-fzf.sh
-  fi
-}
+
+source fzf-utils.sh
 
 findpod() {
   local namespace_query pod_query result namespace pod_name
@@ -25,5 +19,4 @@ findpod() {
   kubectl get pod --namespace=$namespace --output=wide $pod_name
 }
 
-load_kube_fzf
 findpod "$@"
