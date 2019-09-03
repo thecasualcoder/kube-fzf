@@ -3,7 +3,7 @@
 set -e
 set -o pipefail
 
-source fzf-utils.sh
+[[ -z "${KUBE_FZF_PATH}" ]] && source kube-fzf.sh || source $KUBE_FZF_PATH
 
 tailpod() {
   local namespace_query pod_query result namespace pod_name
