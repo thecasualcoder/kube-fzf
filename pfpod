@@ -3,7 +3,7 @@
 set -e
 set -o pipefail
 
-source kube-fzf.sh
+[[ -z "${KUBE_FZF_PATH}" ]] && source kube-fzf.sh || source $KUBE_FZF_PATH
 
 pfpod() {
   local namespace_query pod_query port result namespace pod_name open copy
@@ -37,5 +37,4 @@ copy_to_clipboard() {
   }
   echo "http://localhost:$1" | $copier
 }
-
 pfpod "$@"
