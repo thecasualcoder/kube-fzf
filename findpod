@@ -16,7 +16,7 @@ findpod() {
   IFS=$'|' read -r namespace pod_name <<< "$result"
 
   _kube_fzf_echo "kubectl get pod --namespace='$namespace' --output=wide $pod_name"
-  kubectl get pod --namespace=$namespace --output=wide $pod_name
+  kubectl --insecure-skip-tls-verify get pod --namespace=$namespace --output=wide $pod_name
 }
 
 findpod "$@"

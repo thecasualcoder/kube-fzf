@@ -117,7 +117,7 @@ _kube_fzf_handler() {
     else
       if [ -z "$cmd" ]; then
         if [ "$func" = "execpod" ]; then
-          cmd="sh"
+          cmd="bash"
         elif [ "$func" = "pfpod" ]; then
           echo "Port required." && _kube_fzf_usage "$func" && return 1
         fi
@@ -145,26 +145,26 @@ _kube_fzf_search_pod() {
   local pod_fzf_args=$(_kube_fzf_fzf_args "$pod_query")
 
   if [ -z "$namespace_query" ]; then
-      context=$(kubectl config current-context)
-      namespace=$(kubectl config get-contexts --no-headers $context \
+      context=$(kubectl --insecure-skip-tls-verify config current-context)
+      namespace=$(kubectl --insecure-skip-tls-verify config get-contexts --no-headers $context \
         | awk '{ print $5 }')
 
       namespace=${namespace:=default}
-      pod_name=$(kubectl get pod --namespace=$namespace --no-headers \
+      pod_name=$(kubectl --insecure-skip-tls-verify get pod --namespace=$namespace --no-headers \
           | fzf $(echo $pod_fzf_args) \
         | awk '{ print $1 }')
   elif [ "$namespace_query" = "--all-namespaces" ]; then
-    read namespace pod_name <<< $(kubectl get pod --all-namespaces --no-headers \
+    read namespace pod_name <<< $(kubectl --insecure-skip-tls-verify get pod --all-namespaces --no-headers \
         | fzf $(echo $pod_fzf_args) \
       | awk '{ print $1, $2 }')
   else
     local namespace_fzf_args=$(_kube_fzf_fzf_args "$namespace_query" "--select-1")
-    namespace=$(kubectl get namespaces --no-headers \
+    namespace=$(kubectl --insecure-skip-tls-verify get namespaces --no-headers \
         | fzf $(echo $namespace_fzf_args) \
       | awk '{ print $1 }')
 
     namespace=${namespace:=default}
-    pod_name=$(kubectl get pod --namespace=$namespace --no-headers \
+    pod_name=$(kubectl --insecure-skip-tls-verify get pod --namespace=$namespace --no-headers \
         | fzf $(echo $pod_fzf_args) \
       | awk '{ print $1 }')
   fi

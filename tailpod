@@ -16,12 +16,12 @@ tailpod() {
   IFS=$'|' read -r namespace pod_name <<< "$result"
 
   local fzf_args=$(_kube_fzf_fzf_args "" "--select-1")
-  local container_name=$(kubectl get pod $pod_name --namespace=$namespace --output=jsonpath='{.spec.containers[*].name}' \
+  local container_name=$(kubectl --insecure-skip-tls-verify get pod $pod_name --namespace=$namespace --output=jsonpath='{.spec.containers[*].name}' \
     | tr ' ' '\n' \
     | fzf $(echo $fzf_args))
 
   _kube_fzf_echo "kubectl logs --namespace='$namespace' --follow $pod_name -c $container_name"
-  kubectl logs --namespace=$namespace --follow $pod_name -c $container_name
+  kubectl --insecure-skip-tls-verify logs --namespace=$namespace --follow $pod_name -c $container_name
 }
 
 tailpod "$@"

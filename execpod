@@ -15,12 +15,12 @@ execpod() {
   IFS=$'|' read -r namespace pod_name <<< "$result"
 
   local fzf_args=$(_kube_fzf_fzf_args "" "--select-1")
-  local container_name=$(kubectl get pod $pod_name --namespace=$namespace --output=jsonpath='{.spec.containers[*].name}' \
+  local container_name=$(kubectl --insecure-skip-tls-verify get pod $pod_name --namespace=$namespace --output=jsonpath='{.spec.containers[*].name}' \
     | tr ' ' '\n' \
     | fzf $(echo $fzf_args))
 
   _kube_fzf_echo "kubectl exec --namespace='$namespace' $pod_name -c $container_name -it $cmd"
-  kubectl exec --namespace=$namespace $pod_name -c $container_name -it $cmd
+  kubectl --insecure-skip-tls-verify exec --namespace=$namespace $pod_name -c $container_name -it $cmd
 }
 
 execpod "$@"
