@@ -19,8 +19,8 @@ execpod() {
     | tr ' ' '\n' \
     | fzf $(echo $fzf_args))
 
-  _kube_fzf_echo "kubectl exec --namespace='$namespace' $pod_name -c $container_name -it $cmd"
-  kubectl exec --namespace=$namespace $pod_name -c $container_name -it $cmd
+  _kube_fzf_echo "kubectl exec --namespace='$namespace' $pod_name -c $container_name -it -- $cmd"
+  kubectl exec --namespace=$namespace $pod_name -c $container_name -it -- $cmd
 }
 
 execpod "$@"
