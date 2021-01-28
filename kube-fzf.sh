@@ -210,6 +210,42 @@ _kube_fzf_search_deploy() {
   echo "$namespace|$deploy_name"
 }
 
+_kube_fzf_search_job() {
+  local namespace job_name
+  local namespace_query=$1
+  local job_query=$2
+  local job_fzf_args=$(_kube_fzf_fzf_args "$job_query")
+
+  if [ -z "$namespace_query" ]; then
+      context=$(kubectl config current-context)
+      namespace=$(kubectl config get-contexts --no-headers $context \
+        | awk '{ print $5 }')
+
+      namespace=${namespace:=default}
+      job_name=$(kubectl get job --namespace=$namespace --no-headers \
+          | fzf $(echo $job_fzf_args) \
+        | awk '{ print $1 }')
+  elif [ "$namespace_query" = "--all-namespaces" ]; then
+    read namespace job_name <<< $(kubectl get job --all-namespaces --no-headers \
+        | fzf $(echo $job_fzf_args) \
+      | awk '{ print $1, $2 }')
+  else
+    local namespace_fzf_args=$(_kube_fzf_fzf_args "$namespace_query" "--select-1")
+    namespace=$(kubectl get namespaces --no-headers \
+        | fzf $(echo $namespace_fzf_args) \
+      | awk '{ print $1 }')
+
+    namespace=${namespace:=default}
+    job_name=$(kubectl get job --namespace=$namespace --no-headers \
+        | fzf $(echo $job_fzf_args) \
+      | awk '{ print $1 }')
+  fi
+
+  [ -z "$job_name" ] && return 1
+
+  echo "$namespace|$job_name"
+}
+
 _kube_fzf_echo() {
   local reset_color="\033[0m"
   local bold_green="\033[1;32m"
