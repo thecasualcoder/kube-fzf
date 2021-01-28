@@ -1,8 +1,0 @@
-#!/bin/bash
-
-
-for i in findpod execpod tailpod describepod pfpod findeploy taildeploy kube-fzf.sh
-do
-    ln -s $PWD/$i $HOME/.local/bin/$i
-    #unlink $HOME/.local/bin/$i
-done
