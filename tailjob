@@ -17,7 +17,7 @@ tailjob() {
 
   local fzf_args=$(_kube_fzf_fzf_args "" "--select-1")
 
-  _kube_fzf_echo "kubectl logs --namespace='$namespace' --follow $job_name"
+  _kube_fzf_echo "kubectl logs --namespace='$namespace' --follow job/$job_name"
   kubectl logs --namespace=$namespace --follow job/$job_name
 }
 
