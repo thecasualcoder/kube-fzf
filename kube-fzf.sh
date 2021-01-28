@@ -174,6 +174,42 @@ _kube_fzf_search_pod() {
   echo "$namespace|$pod_name"
 }
 
+_kube_fzf_search_deploy() {
+  local namespace deploy_name
+  local namespace_query=$1
+  local deploy_query=$2
+  local deploy_fzf_args=$(_kube_fzf_fzf_args "$deploy_query")
+
+  if [ -z "$namespace_query" ]; then
+      context=$(kubectl config current-context)
+      namespace=$(kubectl config get-contexts --no-headers $context \
+        | awk '{ print $5 }')
+
+      namespace=${namespace:=default}
+      deploy_name=$(kubectl get deployment --namespace=$namespace --no-headers \
+          | fzf $(echo $deploy_fzf_args) \
+        | awk '{ print $1 }')
+  elif [ "$namespace_query" = "--all-namespaces" ]; then
+    read namespace deploy_name <<< $(kubectl get deployment --all-namespaces --no-headers \
+        | fzf $(echo $deploy_fzf_args) \
+      | awk '{ print $1, $2 }')
+  else
+    local namespace_fzf_args=$(_kube_fzf_fzf_args "$namespace_query" "--select-1")
+    namespace=$(kubectl get namespaces --no-headers \
+        | fzf $(echo $namespace_fzf_args) \
+      | awk '{ print $1 }')
+
+    namespace=${namespace:=default}
+    deploy_name=$(kubectl get deployment --namespace=$namespace --no-headers \
+        | fzf $(echo $deploy_fzf_args) \
+      | awk '{ print $1 }')
+  fi
+
+  [ -z "$deploy_name" ] && return 1
+
+  echo "$namespace|$deploy_name"
+}
+
 _kube_fzf_echo() {
   local reset_color="\033[0m"
   local bold_green="\033[1;32m"
