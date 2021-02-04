@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -e
+set -o pipefail
+
+[[ -z "${KUBE_FZF_PATH}" ]] && source kube-fzf.sh || source $KUBE_FZF_PATH
+deletepod() {
+  local namespace_query pod_query result namespace pod_name
+
+  _kube_fzf_handler "deletepod" "$@"
+  namespace_query=$(echo $args | awk -F '|' '{ print $1 }')
+  pod_query=$(echo $args | awk -F '|' '{ print $2 }')
+
+  result=$(_kube_fzf_search_pod "$namespace_query" "$pod_query")
+  IFS=$'|' read -r namespace pod_name <<< "$result"
+
+  _kube_fzf_echo "kubectl delete pod $pod_name --namespace='$namespace'"
+  kubectl delete pod $pod_name --namespace=$namespace
+}
+
+deletepod "$@"

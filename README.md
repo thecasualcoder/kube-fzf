@@ -29,6 +29,7 @@ git clone https://github.com/thecasualcoder/kube-fzf.git ~/.kube-fzf
 sudo ln -s ~/.kube-fzf/findpod /usr/local/bin/findpod
 sudo ln -s ~/.kube-fzf/execpod /usr/local/bin/execpod
 sudo ln -s ~/.kube-fzf/tailpod /usr/local/bin/tailpod
+sudo ln -s ~/.kube-fzf/deletepod /usr/local/bin/deletepod
 sudo ln -s ~/.kube-fzf/describepod /usr/local/bin/describepod
 sudo ln -s ~/.kube-fzf/pfpod /usr/local/bin/pfpod
 sudo ln -s ~/.kube-fzf/taildeploy  /usr/local/bin/taildeploy
@@ -48,6 +49,12 @@ findpod [-a | -n <namespace-query>] [pod-query]
 
 ```
 findeploy [-a | -n <namespace-query>] [deploy-query]
+```
+
+### `deletepod`
+
+```
+deletepod [-a | -n <namespace-query>] [pod-query]
 ```
 
 ### `describepod`
