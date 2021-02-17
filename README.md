@@ -43,6 +43,12 @@ findpod [-a | -n <namespace-query>] [pod-query]
 findeploy [-a | -n <namespace-query>] [deploy-query]
 ```
 
+### `scaledeploy`
+
+```
+scaledeploy [-a | -n <namespace-query>] scale-number
+```
+
 ### `editdeploy`
 
 ```
