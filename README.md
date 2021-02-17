@@ -43,6 +43,12 @@ findpod [-a | -n <namespace-query>] [pod-query]
 findeploy [-a | -n <namespace-query>] [deploy-query]
 ```
 
+### `editdeploy`
+
+```
+editdeploy [-a | -n <namespace-query>] [deploy-query]
+```
+
 ### `deletepod`
 
 ```
