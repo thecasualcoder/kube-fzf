@@ -25,7 +25,7 @@ brew install kube-fzf
 ### Manual
 
 ```
-git clone https://github.com/bmouser/kube-fzf.git ~/.kube-fzf
+git clone https://github.com/thecasualcoder/kube-fzf.git ~/.kube-fzf
 ./install.sh
 ```
 
