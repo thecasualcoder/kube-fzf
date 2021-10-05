@@ -22,6 +22,11 @@ brew tap thecasualcoder/stable
 brew install kube-fzf
 ```
 
+### Using AUR ( ArchLinux )
+```shell
+yay -S kube-fzf
+```
+
 ### Manual
 
 ```
