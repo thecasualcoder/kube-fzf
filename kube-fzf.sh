@@ -66,6 +66,16 @@ editdeploy [-a | -n <namespace-query>] [doployment-query]
                          If there is only one match then it is selected automatically.
 EOF
       ;;
+    editcm)
+      cat << EOF
+editcm [-a | -n <namespace-query>] [configmap-query]
+
+-a                    -  Search in all namespaces
+-h                    -  Show help
+-n <namespace-query>  -  Find namespaces matching <namespace-query> and do fzf.
+                         If there is only one match then it is selected automatically.
+EOF
+      ;;
   esac
 }
 
@@ -182,6 +192,42 @@ _kube_fzf_search_pod() {
   [ -z "$pod_name" ] && return 1
 
   echo "$namespace|$pod_name"
+}
+
+_kube_fzf_search_configmap() {
+  local namespace configmap_name
+  local namespace_query=$1
+  local configmap_query=$2
+  local configmap_fzf_args=$(_kube_fzf_fzf_args "$configmap_query")
+
+  if [ -z "$namespace_query" ]; then
+      context=$(kubectl config current-context)
+      namespace=$(kubectl config get-contexts --no-headers $context \
+        | awk '{ print $5 }')
+
+      namespace=${namespace:=default}
+      configmap_name=$(kubectl get configmap --namespace=$namespace --no-headers \
+          | fzf $(echo $configmap_fzf_args) \
+        | awk '{ print $1 }')
+  elif [ "$namespace_query" = "--all-namespaces" ]; then
+    read namespace configmap_name <<< $(kubectl get configmap --all-namespaces --no-headers \
+        | fzf $(echo $configmap_fzf_args) \
+      | awk '{ print $1, $2 }')
+  else
+    local namespace_fzf_args=$(_kube_fzf_fzf_args "$namespace_query" "--select-1")
+    namespace=$(kubectl get namespaces --no-headers \
+        | fzf $(echo $namespace_fzf_args) \
+      | awk '{ print $1 }')
+
+    namespace=${namespace:=default}
+    configmap_name=$(kubectl get configmap --namespace=$namespace --no-headers \
+        | fzf $(echo $configmap_fzf_args) \
+      | awk '{ print $1 }')
+  fi
+
+  [ -z "$configmap_name" ] && return 1
+
+  echo "$namespace|$configmap_name"
 }
 
 _kube_fzf_search_deployment() {
