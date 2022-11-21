@@ -11,7 +11,6 @@ editdeploy() {
   namespace_query=$(echo $args | awk -F '|' '{ print $1 }')
   deployment_query=$(echo $args | awk -F '|' '{ print $2 }')
 
-  #result=$(_kube_fzf_search_pod "$namespace_query" "$pod_query")
   result=$(_kube_fzf_search_deployment "$namespace_query" "$deployment_query")
   IFS=$'|' read -r namespace deployment_name <<< "$result"
 
