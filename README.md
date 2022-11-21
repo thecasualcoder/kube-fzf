@@ -36,6 +36,7 @@ sudo ln -s ~/.kube-fzf/execpod /usr/local/bin/execpod
 sudo ln -s ~/.kube-fzf/tailpod /usr/local/bin/tailpod
 sudo ln -s ~/.kube-fzf/describepod /usr/local/bin/describepod
 sudo ln -s ~/.kube-fzf/pfpod /usr/local/bin/pfpod
+sudo ln -s ~/.kube-fzf/editdeploy /usr/local/bin/editdeploy
 sudo ln -s ~/.kube-fzf/kube-fzf.sh  /usr/local/bin/kube-fzf.sh
 ```
 
@@ -69,6 +70,12 @@ execpod [-a | -n <namespace-query>] [pod-query] <command>
 
 ```
 pfpod [-c | -o | -a | -n <namespace-query>] [pod-query] <port>
+```
+
+### `editdeploy`
+
+```
+editdeploy [-c | -o | -a | -n <namespace-query>] [deployment-query] <port>
 ```
 
 #### Options
