@@ -7,6 +7,8 @@ Shell commands using [`kubectl`](https://kubernetes.io/docs/reference/kubectl/ov
 * exec in to a container of a Pod
 * describe a pod
 * port forward pod
+* edit deployment
+* edit configmap
 
 ## Prerequisite
 
