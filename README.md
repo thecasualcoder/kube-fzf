@@ -37,6 +37,7 @@ sudo ln -s ~/.kube-fzf/tailpod /usr/local/bin/tailpod
 sudo ln -s ~/.kube-fzf/describepod /usr/local/bin/describepod
 sudo ln -s ~/.kube-fzf/pfpod /usr/local/bin/pfpod
 sudo ln -s ~/.kube-fzf/editdeploy /usr/local/bin/editdeploy
+sudo ln -s ~/.kube-fzf/editcm /usr/local/bin/editcm
 sudo ln -s ~/.kube-fzf/kube-fzf.sh  /usr/local/bin/kube-fzf.sh
 ```
 
@@ -75,7 +76,13 @@ pfpod [-c | -o | -a | -n <namespace-query>] [pod-query] <port>
 ### `editdeploy`
 
 ```
-editdeploy [-c | -o | -a | -n <namespace-query>] [deployment-query] <port>
+editdeploy [-c | -o | -a | -n <namespace-query>] [deployment-query] 
+```
+
+### `editcm`
+
+```
+editcm [-c | -o | -a | -n <namespace-query>] [configmap-query] 
 ```
 
 #### Options
