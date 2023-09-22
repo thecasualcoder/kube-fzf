@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -e
+set -o pipefail
+
+[[ -z "${KUBE_FZF_PATH}" ]] && source kube-fzf.sh || source $KUBE_FZF_PATH
+
+scaledeploy() {
+  local namespace_query cmd result namespace deploy_name
+
+  _kube_fzf_handler "scaledeploy" "$@"
+  IFS=$'|' read -r namespace_query cmd _unused _unused <<< "$args"
+
+  result=$(_kube_fzf_search_deploy "$namespace_query")
+  IFS=$'|' read -r namespace deploy_name <<< "$result"
+
+  local fzf_args=$(_kube_fzf_fzf_args "" "--select-1")
+
+  _kube_fzf_echo "kubectl scale --replicas=$cmd --namespace='$namespace' deployment/$deploy_name"
+  kubectl scale --replicas=$cmd --namespace=$namespace deployment/$deploy_name
+}
+
+scaledeploy "$@"

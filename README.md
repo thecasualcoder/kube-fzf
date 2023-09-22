@@ -31,12 +31,7 @@ yay -S kube-fzf
 
 ```
 git clone https://github.com/thecasualcoder/kube-fzf.git ~/.kube-fzf
-sudo ln -s ~/.kube-fzf/findpod /usr/local/bin/findpod
-sudo ln -s ~/.kube-fzf/execpod /usr/local/bin/execpod
-sudo ln -s ~/.kube-fzf/tailpod /usr/local/bin/tailpod
-sudo ln -s ~/.kube-fzf/describepod /usr/local/bin/describepod
-sudo ln -s ~/.kube-fzf/pfpod /usr/local/bin/pfpod
-sudo ln -s ~/.kube-fzf/kube-fzf.sh  /usr/local/bin/kube-fzf.sh
+./install.sh
 ```
 
 ## Usage
@@ -45,6 +40,30 @@ sudo ln -s ~/.kube-fzf/kube-fzf.sh  /usr/local/bin/kube-fzf.sh
 
 ```
 findpod [-a | -n <namespace-query>] [pod-query]
+```
+
+### `findeploy`
+
+```
+findeploy [-a | -n <namespace-query>] [deploy-query]
+```
+
+### `scaledeploy`
+
+```
+scaledeploy [-a | -n <namespace-query>] scale-number
+```
+
+### `editdeploy`
+
+```
+editdeploy [-a | -n <namespace-query>] [deploy-query]
+```
+
+### `deletepod`
+
+```
+deletepod [-a | -n <namespace-query>] [pod-query]
 ```
 
 ### `describepod`
@@ -57,6 +76,12 @@ describepod [-a | -n <namespace-query>] [pod-query]
 
 ```
 tailpod [-a | -n <namespace-query>] [pod-query]
+```
+
+### `taildeploy`
+
+```
+taildeploy [-a | -n <namespace-query>] [deployment-query]
 ```
 
 ### `execpod`

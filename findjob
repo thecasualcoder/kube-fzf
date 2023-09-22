@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -e
+set -o pipefail
+
+[[ -z "${KUBE_FZF_PATH}" ]] && source kube-fzf.sh || source $KUBE_FZF_PATH
+
+findjob() {
+  local namespace_query job_query result namespace job_name
+
+  _kube_fzf_handler "findjob" "$@"
+  namespace_query=$(echo $args | awk -F '|' '{ print $1 }')
+  job_query=$(echo $args | awk -F '|' '{ print $2 }')
+
+  result=$(_kube_fzf_search_job "$namespace_query" "$job_query")
+  IFS=$'|' read -r namespace job_name <<< "$result"
+
+  _kube_fzf_echo "kubectl get job --namespace='$namespace' --output=wide $job_name"
+  kubectl get job --namespace=$namespace --output=wide $job_name
+}
+
+findjob "$@"

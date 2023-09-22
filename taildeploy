@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -e
+set -o pipefail
+
+[[ -z "${KUBE_FZF_PATH}" ]] && source kube-fzf.sh || source $KUBE_FZF_PATH
+
+taildeploy() {
+  local namespace_query deploy_query result namespace deploy_name
+
+  _kube_fzf_handler "taildeploy" "$@"
+  namespace_query=$(echo $args | awk -F '|' '{ print $1 }')
+  deploy_query=$(echo $args | awk -F '|' '{ print $2 }')
+
+  result=$(_kube_fzf_search_deploy "$namespace_query" "$deploy_query")
+  IFS=$'|' read -r namespace deploy_name <<< "$result"
+
+  local fzf_args=$(_kube_fzf_fzf_args "" "--select-1")
+
+  _kube_fzf_echo "kubectl logs --namespace='$namespace' --follow deployment/$deploy_name"
+  kubectl logs --namespace=$namespace --follow deployment/$deploy_name
+}
+
+taildeploy "$@"
